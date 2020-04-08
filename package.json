@@ -1,0 +1,22 @@
+{
+  "name": "algorithmpractice",
+  "version": "1.0.0",
+  "description": "a set of practice algorithms implemented in JavaScript",
+  "main": "highestProduct3Integers.js",
+  "scripts": {
+    "test": "jest --collectCoverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesShoaf/AlgorithmPractice.git"
+  },
+  "author": "James Shoaf",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JamesShoaf/AlgorithmPractice/issues"
+  },
+  "homepage": "https://github.com/JamesShoaf/AlgorithmPractice#readme",
+  "devDependencies": {
+    "jest": "^25.3.0"
+  }
+}
