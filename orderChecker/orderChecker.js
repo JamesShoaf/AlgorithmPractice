@@ -1,4 +1,5 @@
-// Given 2 arrays of integers, return a boolean indicating whether a third array contains the union of those arrays in the same relative order
+// Given 2 arrays of integers, return a boolean indicating whether a third array
+// contains the union of those arrays in the same relative order
 
 const orderChecker = (expected1, expected2, actual) => {
   if (actual.length !== expected1.length + expected2.length) {
@@ -22,6 +23,6 @@ const orderChecker = (expected1, expected2, actual) => {
     return false;
   }
   return true;
-}
+};
 
 module.exports = orderChecker;
