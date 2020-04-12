@@ -24,21 +24,21 @@ describe('TouchTone Knights\' Move', () => {
     expect(ttkm(4, 1)).toBe(3);
     expect(ttkm(5, 1)).toBe(0);
     expect(ttkm(6, 1)).toBe(3);
-    expect(ttkm(7, 1)).toBe(1);
+    expect(ttkm(7, 1)).toBe(2);
     expect(ttkm(8, 1)).toBe(2);
-    expect(ttkm(9, 1)).toBe(1);
+    expect(ttkm(9, 1)).toBe(2);
   });
 
   test('it should return the number of possible moves from a number when passed that number and 2 steps', () => {
     expect(ttkm(0, 2)).toBe(6);
     expect(ttkm(1, 2)).toBe(5);
-    expect(ttkm(2, 2)).toBe(2);
+    expect(ttkm(2, 2)).toBe(4);
     expect(ttkm(3, 2)).toBe(5);
-    expect(ttkm(4, 2)).toBe(5);
+    expect(ttkm(4, 2)).toBe(6);
     expect(ttkm(5, 2)).toBe(0);
-    expect(ttkm(6, 2)).toBe(5);
-    expect(ttkm(7, 2)).toBe(3);
+    expect(ttkm(6, 2)).toBe(6);
+    expect(ttkm(7, 2)).toBe(5);
     expect(ttkm(8, 2)).toBe(4);
-    expect(ttkm(9, 2)).toBe(3);
+    expect(ttkm(9, 2)).toBe(5);
   });
 });
