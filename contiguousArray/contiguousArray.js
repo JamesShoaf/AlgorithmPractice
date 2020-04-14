@@ -12,17 +12,27 @@ const contiguousArray = (array) => {
   // otherwise, the longest possible array must be equal parts 1s and 0s, so it must be
   // the lesser of either 2 * arraySum or 2 * (array.length - arraySum)
   let currentFrame = 2 * Math.min(arraySum, array.length - arraySum);
+  let targetSum = currentFrame / 2;
   // scan through each frame in decreasing size until a frame
   // with an equal number of 1s and 0s is found. Return the size of this frame.
   while (currentFrame > 0) {
-    for (let i = 0; i <= array.length - currentFrame; i += 1) {
-      const currentSlice = array.slice(i, i + currentFrame);
-      if (currentSlice.reduce((acc, val) => acc + val, 0) === currentFrame / 2) {
+    // check the sum of the first frame
+    let initialSum = array.slice(0, currentFrame).reduce((acc, val) => acc + val, 0);
+    if (initialSum === targetSum) {
+      return currentFrame;
+    }
+    // shift frame by subtracting off first bit and adding on next bit,
+    // then check again for the target
+    for (let end = currentFrame, start = 0; end < array.length; end += 1, start += 1) {
+      initialSum += array[end];
+      initialSum -= array[start];
+      if (initialSum === targetSum) {
         return currentFrame;
       }
     }
-    // if no contiguous array is found, decrease the frame size and try again
+    // if no contiguous array is found, decrease the frame size and target value, then try again
     currentFrame -= 2;
+    targetSum -= 1;
   }
   return 0;
 };
