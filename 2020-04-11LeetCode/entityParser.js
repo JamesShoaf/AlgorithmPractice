@@ -30,3 +30,5 @@ const entityParser = (text) => {
   parsed += escaped;
   return parsed;
 };
+
+module.exports = entityParser;

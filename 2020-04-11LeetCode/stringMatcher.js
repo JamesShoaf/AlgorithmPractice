@@ -27,3 +27,5 @@ const stringMatcher = (words) => {
   }
   return output;
 };
+
+module.exports = stringMatcher;

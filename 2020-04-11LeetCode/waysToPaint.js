@@ -61,3 +61,6 @@ const waysToPaint = (n) => {
   recursivePainter(0);
   return solutions % (10 ** 9 + 7);
 };
+
+
+module.exports = waysToPaint;

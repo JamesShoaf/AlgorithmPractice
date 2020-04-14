@@ -8,4 +8,18 @@ const promisificate = (func) => (...params) => new Promise((resolve, reject) => 
   1000);
 });
 
+const valPlusCallback = (cb) => {
+  const val = Math.floor(2 * Math.random());
+  setTimeout(cb, 1000, val);
+  return Boolean(Math.floor(2 * Math.random()));
+};
+
+const promiseValBack = () => {
+  const output = [];
+  output.push(new Promise((resolve) => {
+    output.push(valPlusCallback(resolve));
+  }));
+  return output;
+};
+
 module.exports = promisificate;

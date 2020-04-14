@@ -27,3 +27,5 @@ const queriesOnPermutation = (query, m) => {
   }
   return output;
 };
+
+module.exports = queriesOnPermutation;
