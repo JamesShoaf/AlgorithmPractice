@@ -75,11 +75,11 @@ const mentaculus = {
   },
 };
 
-// for (let i = 1; i < 31; i += 1) {
-//   const string = `${mentaculus.generateSkipDescending(i)}
-//    - 8 * ${mentaculus.generateSkipAscending(i)}
-//    = ${mentaculus.skipRemainder(i)}`;
-//   console.log(string);
-// }
+for (let i = 1; i < 15; i += 1) {
+  const string = `${mentaculus.generateSkipDescending(i, 3)}
+   - 1 * ${mentaculus.generateSkipAscending(i, 3)}
+   = ${mentaculus.skipRemainder(i, 3)}`;
+  console.log(string);
+}
 
 module.exports = mentaculus;
