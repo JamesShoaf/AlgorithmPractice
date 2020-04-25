@@ -61,6 +61,25 @@ const mentaculus = {
     }
     return output;
   },
+  skipRemainder: (length, radix = 10) => {
+    const ascending = BigInt(mentaculus.generateSkipAscending(length, radix));
+    const descending = BigInt(mentaculus.generateSkipDescending(length, radix));
+    const remainder = descending - BigInt(radix - 2) * ascending;
+    return String(remainder);
+  },
+  remainder: (length, radix = 10) => {
+    const ascending = BigInt(mentaculus.generateAscending(length, radix));
+    const descending = BigInt(mentaculus.generateDescending(length, radix));
+    const remainder = descending - BigInt(radix - 2) * ascending;
+    return String(remainder);
+  },
 };
+
+// for (let i = 1; i < 31; i += 1) {
+//   const string = `${mentaculus.generateSkipDescending(i)}
+//    - 8 * ${mentaculus.generateSkipAscending(i)}
+//    = ${mentaculus.skipRemainder(i)}`;
+//   console.log(string);
+// }
 
 module.exports = mentaculus;
