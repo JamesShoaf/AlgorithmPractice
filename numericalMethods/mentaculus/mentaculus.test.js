@@ -3,15 +3,7 @@ const mentaculus = require('./mentaculus');
 describe('generateSkipAscending', () => {
   test('it should return a string of the correct length', () => {
     for (let i = 1; i < 31; i += 1) {
-      const ascending = mentaculus.generateSkipAscending(i);
-      expect(typeof ascending).toBe('string');
-      expect(ascending.length).toBe(i);
-    }
-  });
-
-  test('it should return a string of the correct length for non-default bases', () => {
-    for (let i = 1; i < 31; i += 1) {
-      for (let j = 3; j < 10; j += 1) {
+      for (let j = 3; j < 11; j += 1) {
         const ascending = mentaculus.generateSkipAscending(i, j);
         expect(typeof ascending).toBe('string');
         expect(ascending.length).toBe(i);
@@ -42,15 +34,7 @@ describe('generateSkipAscending', () => {
 describe('generateAscending', () => {
   test('it should return a string of the correct length', () => {
     for (let i = 1; i < 31; i += 1) {
-      const ascending = mentaculus.generateAscending(i);
-      expect(typeof ascending).toBe('string');
-      expect(ascending.length).toBe(i);
-    }
-  });
-
-  test('it should return a string of the correct length for non-default bases', () => {
-    for (let i = 1; i < 31; i += 1) {
-      for (let j = 3; j < 10; j += 1) {
+      for (let j = 3; j < 11; j += 1) {
         const ascending = mentaculus.generateAscending(i, j);
         expect(typeof ascending).toBe('string');
         expect(ascending.length).toBe(i);
@@ -81,17 +65,30 @@ describe('generateAscending', () => {
 describe('generateSkipDescending', () => {
   test('it should return a string of the correct length', () => {
     for (let i = 1; i < 31; i += 1) {
-      const ascending = mentaculus.generateSkipDescending(i);
-      expect(typeof ascending).toBe('string');
-      expect(ascending.length).toBe(i);
+      for (let j = 3; j < 11; j += 1) {
+        const descending = mentaculus.generateSkipDescending(i, j);
+        expect(typeof descending).toBe('string');
+        expect(descending.length).toBe(i);
+      }
     }
   });
 
   test('it should return the correct string', () => {
-    const testString = '987654321987654321987654321987654321987654321987654321';
+    const testStrings = {
+      3: '21212121212121212121212121212121212121212121212121212121',
+      4: '321321321321321321321321321321321321321321321321321321321',
+      5: '43214321432143214321432143214321432143214321432143214321',
+      6: '5432154321543215432154321543215432154321543215432154321',
+      7: '654321654321654321654321654321654321654321654321654321654321',
+      8: '76543217654321765432176543217654321765432176543217654321',
+      9: '87654321876543218765432187654321876543218765432187654321',
+      10: '987654321987654321987654321987654321987654321987654321',
+    };
     for (let i = 1; i < 31; i += 1) {
-      const subString = testString.slice(0, i);
-      expect(mentaculus.generateSkipDescending(i)).toBe(subString);
+      for (let j = 3; j < 11; j += 1) {
+        const subString = testStrings[j].slice(0, i);
+        expect(mentaculus.generateSkipDescending(i, j)).toBe(subString);
+      }
     }
   });
 });
@@ -99,17 +96,30 @@ describe('generateSkipDescending', () => {
 describe('generateDescending', () => {
   test('it should return a string of the correct length', () => {
     for (let i = 1; i < 31; i += 1) {
-      const ascending = mentaculus.generateDescending(i);
-      expect(typeof ascending).toBe('string');
-      expect(ascending.length).toBe(i);
+      for (let j = 3; j < 11; j += 1) {
+        const descending = mentaculus.generateDescending(i, j);
+        expect(typeof descending).toBe('string');
+        expect(descending.length).toBe(i);
+      }
     }
   });
 
   test('it should return the correct string', () => {
-    const testString = '987654321098765432109876543210987654321098765432109876543210';
+    const testStrings = {
+      3: '210210210210210210210210210210210210210210210210210210210210',
+      4: '3210321032103210321032103210321032103210321032103210321032103210',
+      5: '43210432104321043210432104321043210432104321043210432104321043210',
+      6: '543210543210543210543210543210543210543210543210543210543210543210',
+      7: '654321065432106543210654321065432106543210654321065432106543210',
+      8: '7654321076543210765432107654321076543210765432107654321076543210',
+      9: '876543210876543210876543210876543210876543210876543210876543210',
+      10: '987654321098765432109876543210987654321098765432109876543210',
+    };
     for (let i = 1; i < 31; i += 1) {
-      const subString = testString.slice(0, i);
-      expect(mentaculus.generateDescending(i)).toBe(subString);
+      for (let j = 3; j < 11; j += 1) {
+        const subString = testStrings[j].slice(0, i);
+        expect(mentaculus.generateDescending(i, j)).toBe(subString);
+      }
     }
   });
 });
@@ -117,7 +127,9 @@ describe('generateDescending', () => {
 describe('skipRemainder', () => {
   test('it should return a string', () => {
     for (let i = 1; i < 31; i += 1) {
-      expect(typeof mentaculus.skipRemainder(i)).toBe('string');
+      for (let j = 3; j < 11; j += 1) {
+        expect(typeof mentaculus.skipRemainder(i, j)).toBe('string');
+      }
     }
   });
 
@@ -131,7 +143,9 @@ describe('skipRemainder', () => {
 describe('remainder', () => {
   test('it should return a string', () => {
     for (let i = 1; i < 31; i += 1) {
-      expect(typeof mentaculus.remainder(i)).toBe('string');
+      for (let j = 3; j < 11; j += 1) {
+        expect(typeof mentaculus.remainder(i, j)).toBe('string');
+      }
     }
   });
 
