@@ -7,23 +7,27 @@ Determine if you are able to reach the last index.
 
 const jumpGame = (array) => {
   const lastIndex = array.length - 1;
-  const recursiveJumpChecker = (endpoint) => {
-    if (endpoint === 0) {
+  const lookAhead = (startIndex) => {
+    const moveOptions = array[startIndex];
+    if (lastIndex <= startIndex + moveOptions) {
       return true;
     }
-    let furthestBack;
-    for (let i = endpoint - 1; i >= 0; i -= 1) {
-      const currentIndex = i;
-      if (array[currentIndex] >= endpoint - currentIndex) {
-        furthestBack = currentIndex;
+    let nextIndex = startIndex;
+    let farthestForward = 0;
+    for (let i = 0; i < moveOptions; i += 1) {
+      const currentIndex = startIndex + i;
+      const forward = currentIndex + array[currentIndex];
+      if (farthestForward <= forward) {
+        farthestForward = forward;
+        nextIndex = currentIndex;
       }
     }
-    if (furthestBack === undefined) {
+    if (nextIndex === startIndex) {
       return false;
     }
-    return recursiveJumpChecker(furthestBack);
+    return lookAhead(nextIndex);
   };
-  return recursiveJumpChecker(lastIndex);
+  return lookAhead(0);
 };
 
 module.exports = {
