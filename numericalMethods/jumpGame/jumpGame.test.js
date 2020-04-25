@@ -23,6 +23,10 @@ const testArrays = [
     [3, 0, 0, 0, 0],
     false,
   ],
+  [
+    [1, 2, 3],
+    true,
+  ],
 ];
 
 describe('jumpGame', () => {

@@ -15,7 +15,7 @@ const jumpGame = (array) => {
     let nextIndex = startIndex;
     let farthestForward = 0;
     for (let i = 0; i < moveOptions; i += 1) {
-      const currentIndex = startIndex + i;
+      const currentIndex = startIndex + i + 1;
       const forward = currentIndex + array[currentIndex];
       if (farthestForward <= forward) {
         farthestForward = forward;
@@ -29,6 +29,8 @@ const jumpGame = (array) => {
   };
   return lookAhead(0);
 };
+
+jumpGame([1, 2, 3]);
 
 module.exports = {
   jumpGame,

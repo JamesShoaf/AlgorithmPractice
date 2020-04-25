@@ -1,4 +1,6 @@
-const mentaculus = require('./mentaculus');
+const {
+  mentaculus,
+} = require('./mentaculus');
 
 describe('generateSkipAscending', () => {
   test('it should return a string of the correct length', () => {
@@ -134,8 +136,10 @@ describe('skipRemainder', () => {
   });
 
   test('it should return the remainder that must be added to the multiple of the ascending string', () => {
-    for (let i = 1; i < 10; i += 1) {
-      expect(mentaculus.skipRemainder(i)).toBe(`${i}`);
+    for (let i = 3; i < 11; i += 1) {
+      for (let j = 1; j < i; j += 1) {
+        expect(mentaculus.skipRemainder(j, i)).toBe(`${j}`);
+      }
     }
   });
 });
@@ -150,8 +154,10 @@ describe('remainder', () => {
   });
 
   test('it should return the remainder that must be added to the multiple of the ascending string', () => {
-    for (let i = 1; i < 10; i += 1) {
-      expect(mentaculus.remainder(i)).toBe(`${i}`);
+    for (let i = 3; i < 11; i += 1) {
+      for (let j = 1; j < i; j += 1) {
+        expect(mentaculus.remainder(j, i)).toBe(`${j}`);
+      }
     }
   });
 });
