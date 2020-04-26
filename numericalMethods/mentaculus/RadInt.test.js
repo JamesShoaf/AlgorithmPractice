@@ -22,6 +22,28 @@ describe('Constructor', () => {
   });
 });
 
+describe('plus', () => {
+  test('it should return null if the two numbers have a base mismatch', () => {
+    expect(rad9.plus(rad0)).toBe(null);
+    expect(rad5.plus(rad3)).toBe(null);
+  });
+
+  test('it should return a RadInt', () => {
+    expect(rad3.plus(rad0) instanceof RadInt).toBe(true);
+    expect(rad9.plus(rad5) instanceof RadInt).toBe(true);
+  });
+
+  test('it should return a RadInt with the same base', () => {
+    expect(rad3.plus(rad0).radix).toBe(10);
+    expect(rad9.plus(rad5).radix).toBe(7);
+  });
+
+  test('it should return a RadInt with the correct value', () => {
+    expect(rad3.plus(rad0).value).toBe('3');
+    expect(rad9.plus(rad5).value).toBe('20');
+  });
+});
+
 describe('minus', () => {
   test('it should return null if the two numbers have a base mismatch', () => {
     expect(rad9.minus(rad0)).toBe(null);
