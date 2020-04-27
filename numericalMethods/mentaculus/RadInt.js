@@ -64,11 +64,14 @@ class RadInt {
         runningDiff += radix;
         carryBit -= 1;
       }
-      if (runningDiff !== 0 || lastIndex > 0) {
-        difference = `${runningDiff}${difference}`;
-      }
+      difference = `${runningDiff}${difference}`;
       lastIndex -= 1;
       lastIndex2 -= 1;
+    }
+    for (let i = 0; i < difference.length; i += 1) {
+      if (difference[i] !== '0') {
+        return new RadInt(difference.slice(i), radix);
+      }
     }
     return new RadInt(difference, radix);
   }

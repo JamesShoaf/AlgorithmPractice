@@ -127,8 +127,13 @@ describe('minus', () => {
   test('it should return a RadInt with the correct value', () => {
     intsArray.forEach((row, rowIndex) => {
       const base = rowIndex + 3;
-      for (let col = 1; col < row.length; col += 1) {
+      const { length } = row;
+      for (let col = 1; col < length; col += 1) {
         expect(row[col].minus(row[0]).value).toBe(Number(col).toString(base));
+      }
+      const biggest = row[length - 1];
+      for (let col = length - 2; col > 0; col -= 1) {
+        expect(biggest.minus(row[col]).value).toBe(Number(length - col - 1).toString(base));
       }
     });
     expect(rad3.minus(rad0).value).toBe('3');
