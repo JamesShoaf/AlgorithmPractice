@@ -2,15 +2,31 @@ const {
   RadInt,
 } = require('./RadInt');
 
+const intsArray = [];
+for (let base = 3; base <= 10; base += 1) {
+  intsArray.push([]);
+  const baseArray = intsArray[base - 3];
+  for (let int = 0; int < 1000; int += 1) {
+    baseArray.push(new RadInt(int, base));
+  }
+}
 const rad0 = new RadInt();
 const rad3 = new RadInt('3', 10);
 const rad5 = new RadInt('5', 7);
 const rad9 = new RadInt('12', 7);
-const testArray = [rad0, rad3, rad5];
+const stringsArray = [rad0, rad3, rad5, rad9];
 
 describe('Constructor', () => {
   test('it should generate RadInt objects', () => {
-    testArray.forEach((radInt) => expect(radInt instanceof RadInt).toBe(true));
+    intsArray.forEach((baseRow, rowIndex) => {
+      const base = rowIndex + 3;
+      baseRow.forEach((radInt, colIndex) => {
+        expect(radInt instanceof RadInt).toBe(true);
+        expect(radInt.value).toBe(Number(colIndex).toString(base));
+        expect(radInt.radix).toBe(base);
+      });
+    });
+    stringsArray.forEach((radInt) => expect(radInt instanceof RadInt).toBe(true));
     expect(rad0.value).toBe('0');
     expect(rad3.value).toBe('3');
     expect(rad5.value).toBe('5');
