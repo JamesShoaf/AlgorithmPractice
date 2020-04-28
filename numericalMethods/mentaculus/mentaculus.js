@@ -1,3 +1,7 @@
+const {
+  RadInt,
+} = require('./RadInt');
+
 /*
 There exists a property of place value such that multiplying an ascending set
 of integers by the radix minus 2 and adding a small remainder results in a descending set
@@ -62,25 +66,18 @@ const mentaculus = {
     return output;
   },
   skipRemainder: (length, radix = 10) => {
-    const ascending = BigInt(mentaculus.generateSkipAscending(length, radix));
-    const descending = BigInt(mentaculus.generateSkipDescending(length, radix));
-    const remainder = descending - BigInt(radix - 2) * ascending;
-    return String(remainder);
+    const ascending = new RadInt(mentaculus.generateSkipAscending(length, radix), radix);
+    const descending = new RadInt(mentaculus.generateSkipDescending(length, radix), radix);
+    const remainder = descending.minus(new RadInt(radix - 2, radix).times(ascending));
+    return remainder.value;
   },
   remainder: (length, radix = 10) => {
-    const ascending = BigInt(mentaculus.generateAscending(length, radix));
-    const descending = BigInt(mentaculus.generateDescending(length, radix));
-    const remainder = descending - BigInt(radix - 2) * ascending;
-    return String(remainder);
+    const ascending = new RadInt(mentaculus.generateAscending(length, radix), radix);
+    const descending = new RadInt(mentaculus.generateDescending(length, radix), radix);
+    const remainder = descending.minus(new RadInt(radix - 2, radix).times(ascending));
+    return remainder.value;
   },
 };
-
-// for (let i = 1; i < 15; i += 1) {
-//   const string = `${mentaculus.generateSkipDescending(i, 3)}
-//    - 1 * ${mentaculus.generateSkipAscending(i, 3)}
-//    = ${mentaculus.skipRemainder(i, 3)}`;
-//   console.log(string);
-// }
 
 module.exports = {
   mentaculus,
