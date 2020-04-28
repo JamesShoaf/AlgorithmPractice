@@ -16,11 +16,12 @@ for (let base = 3; base <= 10; base += 1) {
   const baseArray = testValues.map((int) => new RadInt(int, base));
   intsArray.push(baseArray);
 }
-const rad0 = new RadInt();
+const rad = new RadInt();
+const rad0 = new RadInt('0', 2);
 const rad3 = new RadInt('3', 10);
 const rad5 = new RadInt('5', 7);
 const rad9 = new RadInt('12', 7);
-const stringsArray = [rad0, rad3, rad5, rad9];
+const stringsArray = [rad, rad0, rad3, rad5, rad9];
 
 describe('Constructor', () => {
   test('it should generate RadInt objects', () => {
@@ -33,15 +34,15 @@ describe('Constructor', () => {
   });
 
   test('it should generate RadInts with the correct base', () => {
-    // intsArray.forEach((baseRow, rowIndex) => {
-    //   const base = rowIndex + 3;
-    //   baseRow.forEach((radInt) => {
-    //     expect(radInt.radix).toBe(base);
-    //   });
-    // });
+    intsArray.forEach((baseRow, rowIndex) => {
+      const base = rowIndex + 3;
+      baseRow.forEach((radInt) => {
+        expect(radInt.radix).toBe(base);
+      });
+    });
 
-    console.dir(rad0);
-    expect(rad0.radix).toBe(10);
+    expect(rad.radix).toBe(10);
+    expect(rad0.radix).toBe(2);
     expect(rad3.radix).toBe(10);
     expect(rad5.radix).toBe(7);
     expect(rad9.radix).toBe(7);
@@ -55,6 +56,7 @@ describe('Constructor', () => {
       });
     });
 
+    expect(rad.value).toBe('0');
     expect(rad0.value).toBe('0');
     expect(rad3.value).toBe('3');
     expect(rad5.value).toBe('5');
@@ -87,7 +89,7 @@ describe('plus', () => {
       }
     }
 
-    expect(rad9.plus(rad0)).toBe(null);
+    expect(rad9.plus(rad)).toBe(null);
     expect(rad5.plus(rad3)).toBe(null);
   });
 
@@ -99,7 +101,7 @@ describe('plus', () => {
       }
     });
 
-    expect(rad3.plus(rad0) instanceof RadInt).toBe(true);
+    expect(rad3.plus(rad) instanceof RadInt).toBe(true);
     expect(rad9.plus(rad5) instanceof RadInt).toBe(true);
   });
 
@@ -112,7 +114,7 @@ describe('plus', () => {
       }
     });
 
-    expect(rad3.plus(rad0).radix).toBe(10);
+    expect(rad3.plus(rad).radix).toBe(10);
     expect(rad9.plus(rad5).radix).toBe(7);
   });
 
@@ -126,7 +128,7 @@ describe('plus', () => {
       }
     });
 
-    expect(rad3.plus(rad0).value).toBe('3');
+    expect(rad3.plus(rad).value).toBe('3');
     expect(rad9.plus(rad5).value).toBe('20');
   });
 });
@@ -140,7 +142,7 @@ describe('minus', () => {
         expect(intsArray[row][col].minus(base3[col])).toBe(null);
       }
     }
-    expect(rad9.minus(rad0)).toBe(null);
+    expect(rad9.minus(rad)).toBe(null);
     expect(rad5.minus(rad3)).toBe(null);
   });
 
@@ -150,7 +152,7 @@ describe('minus', () => {
         expect(row[col].minus(row[col - 1]) instanceof RadInt).toBe(true);
       }
     });
-    expect(rad3.minus(rad0) instanceof RadInt).toBe(true);
+    expect(rad3.minus(rad) instanceof RadInt).toBe(true);
     expect(rad9.minus(rad5) instanceof RadInt).toBe(true);
   });
 
@@ -161,7 +163,7 @@ describe('minus', () => {
         expect(row[col].minus(row[col - 1]).radix).toBe(base);
       }
     });
-    expect(rad3.minus(rad0).radix).toBe(10);
+    expect(rad3.minus(rad).radix).toBe(10);
     expect(rad9.minus(rad5).radix).toBe(7);
   });
 
@@ -174,7 +176,7 @@ describe('minus', () => {
           .toBe(Number(testValues[col] - testValues[col - 1]).toString(base));
       }
     });
-    expect(rad3.minus(rad0).value).toBe('3');
+    expect(rad3.minus(rad).value).toBe('3');
     expect(rad9.minus(rad5).value).toBe('4');
   });
 });
@@ -188,7 +190,7 @@ describe('times', () => {
         expect(intsArray[row][col].times(base3[col])).toBe(null);
       }
     }
-    expect(rad9.times(rad0)).toBe(null);
+    expect(rad9.times(rad)).toBe(null);
     expect(rad5.times(rad3)).toBe(null);
   });
 
@@ -198,7 +200,7 @@ describe('times', () => {
         expect(row[col - 1].times(row[col]) instanceof RadInt).toBe(true);
       }
     });
-    expect(rad3.times(rad0) instanceof RadInt).toBe(true);
+    expect(rad3.times(rad) instanceof RadInt).toBe(true);
     expect(rad9.times(rad5) instanceof RadInt).toBe(true);
   });
 
@@ -209,7 +211,7 @@ describe('times', () => {
         expect(row[col].times(row[col - 1]).radix).toBe(base);
       }
     });
-    expect(rad3.times(rad0).radix).toBe(10);
+    expect(rad3.times(rad).radix).toBe(10);
     expect(rad9.times(rad5).radix).toBe(7);
   });
 
@@ -221,7 +223,7 @@ describe('times', () => {
           .toBe(Number(testValues[col] * testValues[col - 1]).toString(base));
       }
     });
-    expect(rad3.minus(rad0).value).toBe('3');
+    expect(rad3.minus(rad).value).toBe('3');
     expect(rad9.minus(rad5).value).toBe('4');
   });
 });

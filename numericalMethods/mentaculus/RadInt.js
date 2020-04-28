@@ -1,6 +1,6 @@
 class RadInt {
   constructor(value = '0', radix = 10) {
-    if (!((typeof value === 'string' && value.search(/\D/) === -1 && value[0] !== '0' && value !== '')
+    if (!((typeof value === 'string' && value.search(/\D/) === -1 && (value[0] !== '0' || value === '0') && value !== '')
         || (typeof value === 'number' && Number.isInteger(value) && value >= 0))
       || typeof radix !== 'number' || !(radix > 1) || !Number.isInteger(radix)) {
       this.value = '0';
@@ -81,6 +81,41 @@ class RadInt {
       }
     }
     return new RadInt(difference, radix);
+  }
+
+  times(radInt) {
+    const { radix, value } = this;
+    if (radix !== radInt.radix) {
+      return null;
+    }
+    const value2 = radInt.value;
+    let product = new RadInt(0, radix);
+    let runningSum;
+    let carryBit;
+    const lastIndex = value.length - 1;
+    const lastIndex2 = value2.length - 1;
+    for (let i = lastIndex; i >= 0; i -= 1) {
+      runningSum = '';
+      carryBit = 0;
+      const parse = Number.parseInt(value[i], radix);
+      for (let k = 0; k < lastIndex - i; k += 1) {
+        runningSum += '0';
+      }
+      for (let j = lastIndex2; j >= 0; j -= 1) {
+        const parse2 = Number.parseInt(value2[j], radix);
+        let subProduct = parse * parse2;
+        subProduct += carryBit;
+        runningSum = `${subProduct % radix}${runningSum}`;
+        carryBit = Math.floor(subProduct / radix);
+      }
+      if (carryBit > 0) {
+        runningSum = `${carryBit}${runningSum}`;
+      }
+      if (/* runningSum.search(/[^0]/) !== -1 */ runningSum[0] !== '0') {
+        product = product.plus(new RadInt(runningSum, radix));
+      }
+    }
+    return product;
   }
 }
 
