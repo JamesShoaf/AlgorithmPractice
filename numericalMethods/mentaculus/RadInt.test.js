@@ -33,13 +33,14 @@ describe('Constructor', () => {
   });
 
   test('it should generate RadInts with the correct base', () => {
-    intsArray.forEach((baseRow, rowIndex) => {
-      const base = rowIndex + 3;
-      baseRow.forEach((radInt) => {
-        expect(radInt.radix).toBe(base);
-      });
-    });
+    // intsArray.forEach((baseRow, rowIndex) => {
+    //   const base = rowIndex + 3;
+    //   baseRow.forEach((radInt) => {
+    //     expect(radInt.radix).toBe(base);
+    //   });
+    // });
 
+    console.dir(rad0);
     expect(rad0.radix).toBe(10);
     expect(rad3.radix).toBe(10);
     expect(rad5.radix).toBe(7);
@@ -60,14 +61,18 @@ describe('Constructor', () => {
     expect(rad9.value).toBe('12');
   });
 
-  test('it should return null if given invalid input', () => {
-    const invalidValues = ['', 'hello', 3.14, -2, NaN, true, false, null];
+  test('it should return the default if given invalid input', () => {
+    const invalidValues = ['', 'hello', '010', 3.14, -2, NaN, true, false, null];
     const invalidBases = ['', 'hello', 3.14, -2, NaN, true, false, null];
     invalidValues.forEach((value) => {
-      expect(new RadInt(value, 10)).toBe(null);
+      const invalid = new RadInt(value, 10);
+      expect(invalid.value).toBe('0');
+      expect(invalid.radix).toBe(10);
     });
     invalidBases.forEach((base) => {
-      expect(new RadInt(10, base)).toBe(null);
+      const invalid = new RadInt(10, base);
+      expect(invalid.value).toBe('0');
+      expect(invalid.radix).toBe(10);
     });
   });
 });

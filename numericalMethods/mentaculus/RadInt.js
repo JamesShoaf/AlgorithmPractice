@@ -1,5 +1,12 @@
 class RadInt {
   constructor(value = '0', radix = 10) {
+    if (!((typeof value === 'string' && value.search(/\D/) === -1 && value[0] !== '0' && value !== '')
+        || (typeof value === 'number' && Number.isInteger(value) && value >= 0))
+      || typeof radix !== 'number' || !(radix > 1) || !Number.isInteger(radix)) {
+      this.value = '0';
+      this.radix = 10;
+      return;
+    }
     this.value = (typeof value === 'string') ? value : Number(value).toString(radix);
     this.radix = radix;
   }
