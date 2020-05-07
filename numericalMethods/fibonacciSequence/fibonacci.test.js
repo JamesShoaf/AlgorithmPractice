@@ -1,5 +1,6 @@
 const {
   fibonacci,
+  Fib,
 } = require('./fibonacci');
 
 const testTuples = [
@@ -27,6 +28,21 @@ describe('fibonacci', () => {
   test('it should return the correct number', () => {
     testTuples.forEach((tuple) => {
       expect(fibonacci(...tuple)).toBe(tuple[1]);
+    });
+  });
+});
+
+describe('Fib', () => {
+  const fib = new Fib();
+  test('it should return an integer', () => {
+    testTuples.forEach((tuple) => {
+      expect(Number.isInteger(fib.fibonacci(...tuple))).toBe(true);
+    });
+  });
+
+  test('it should return the correct number', () => {
+    testTuples.forEach((tuple) => {
+      expect(fib.fibonacci(...tuple)).toBe(tuple[1]);
     });
   });
 });
