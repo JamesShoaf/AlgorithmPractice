@@ -4,6 +4,8 @@ const { countTriplets } = require('./countTriplets');
 
 const { minTime } = require('./minTime');
 
+const { ways } = require('./ways');
+
 describe('buildArray', () => {
   const testTuples = [
     [[1, 3], 3, ['Push', 'Push', 'Pop', 'Push']],
@@ -77,5 +79,31 @@ describe('minPath', () => {
   ];
   test('it should return the minimum path length', () => {
     testTuples.forEach((tuple) => expect(minTime(...tuple)).toBe(tuple[3]));
+  });
+});
+
+describe('ways', () => {
+  const testTuples = [
+    [
+      ['A..', 'AAA', '...'],
+      3,
+      3,
+    ],
+    [
+      ['A..', 'AA.', '...'],
+      3,
+      1,
+    ],
+    [
+      ['A..', 'A..', '...'],
+      1,
+      1,
+    ],
+  ];
+  test('it should return the number of ways to slice a pizza', () => {
+    testTuples.forEach((tuple) => {
+      const [pie, slices, expected] = tuple;
+      expect(ways(pie, slices)).toBe(expected);
+    });
   });
 });
