@@ -1,5 +1,6 @@
 const {
   MakeChange,
+  makeChange,
 } = require('./makeChange');
 
 const denominations = [
@@ -35,6 +36,16 @@ describe('makeChange', () => {
         const expected = waysToMakeChange[row][col];
         const received = changer.makeChange(sum);
         expect(received).toBe(expected);
+      });
+    });
+  });
+});
+
+describe('makeChange (bottom up)', () => {
+  test('it should return the correct number of ways to make change', () => {
+    denominations.forEach((denom, row) => {
+      testSums.forEach((sum, col) => {
+        expect(makeChange(sum, denom)).toBe(waysToMakeChange[row][col]);
       });
     });
   });

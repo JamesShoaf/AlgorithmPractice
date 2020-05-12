@@ -34,6 +34,19 @@ class MakeChange {
   }
 }
 
+const makeChange = (sum, denominations) => {
+  const waysToMakeChange = [...new Array(sum + 1)].fill(0);
+  waysToMakeChange[0] = 1;
+  denominations.forEach((coin) => {
+    for (let i = coin; i <= sum; i += 1) {
+      const remainder = i - coin;
+      waysToMakeChange[i] += waysToMakeChange[remainder];
+    }
+  });
+  return waysToMakeChange[sum];
+};
+
 module.exports = {
   MakeChange,
+  makeChange,
 };
