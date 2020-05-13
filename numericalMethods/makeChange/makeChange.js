@@ -35,7 +35,7 @@ class MakeChange {
 }
 
 const makeChange = (sum, denominations) => {
-  const waysToMakeChange = [...new Array(sum + 1)].fill(0);
+  const waysToMakeChange = [...Array(sum + 1)].fill(0);
   waysToMakeChange[0] = 1;
   denominations.forEach((coin) => {
     for (let i = coin; i <= sum; i += 1) {

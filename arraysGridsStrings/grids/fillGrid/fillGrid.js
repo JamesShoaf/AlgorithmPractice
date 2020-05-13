@@ -16,8 +16,8 @@ const fillGrid = (...args) => {
   ) {
     throw new Error('invalid array dimensions');
   }
-  return [...new Array(rows)]
-    .map(() => [...new Array(cols)]
+  return [...Array(rows)]
+    .map(() => [...Array(cols)]
       .map(() => fill));
 };
 

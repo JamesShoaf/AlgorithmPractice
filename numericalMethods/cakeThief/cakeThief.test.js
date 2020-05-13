@@ -3,7 +3,7 @@ const {
   zeroOneCakesack,
 } = require('./cakeThief');
 
-const cakesacks = [...new Array(11).keys()];
+const cakesacks = [...Array(11).keys()];
 
 const cakeTypes = [
   { weight: 2, value: 15 },
