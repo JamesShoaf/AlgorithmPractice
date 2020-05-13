@@ -39,6 +39,26 @@ class BinaryTree {
     }
     return output;
   }
+
+  static isSuperBalanced(tree) {
+    let minLeafDepth;
+    let maxLeafDepth;
+    const dfGenerationSearch = (node, depth = 0) => {
+      // terminate early for null children
+      if (node === null) return true;
+      // if node is a leaf, compare its depth with min and max known leaf depths
+      if (node.left === null && node.right === null) {
+        minLeafDepth = Math.min(minLeafDepth, depth) || depth;
+        maxLeafDepth = Math.max(maxLeafDepth, depth) || depth;
+        if (maxLeafDepth - minLeafDepth > 1) return false;
+        return true;
+      }
+      if (dfGenerationSearch(node.left, depth + 1)
+      && dfGenerationSearch(node.right, depth + 1)) return true;
+      return false;
+    };
+    return dfGenerationSearch(tree);
+  }
 }
 
 module.exports = {
