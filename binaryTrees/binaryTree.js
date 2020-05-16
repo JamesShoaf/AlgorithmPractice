@@ -64,18 +64,17 @@ class BinaryTree {
     return true;
   }
 
-  static isValidBinarySearchTree(
-    tree,
-    lowerBound = Number.NEGATIVE_INFINITY,
-    upperBound = Number.POSITIVE_INFINITY,
-  ) {
-    if (!tree) return true;
-    const { val, left, right } = tree;
-    if (val < lowerBound) return false;
-    if (val > upperBound) return false;
-    if (BinaryTree.isValidBinarySearchTree(left, lowerBound, val)
-    && BinaryTree.isValidBinarySearchTree(right, val, upperBound)) return true;
-    return false;
+  static isValidBinarySearchTree(tree) {
+    const stack = [[tree, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY]];
+    while (stack.length) {
+      const [node, lowerBound, upperBound] = stack.pop();
+      const { val, left, right } = node;
+      if (val < lowerBound) return false;
+      if (val > upperBound) return false;
+      if (left !== null) stack.push([left, lowerBound, val]);
+      if (right !== null) stack.push([right, val, upperBound]);
+    }
+    return true;
   }
 }
 
