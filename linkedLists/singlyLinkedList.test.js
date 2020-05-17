@@ -85,3 +85,16 @@ describe('Looping Lists', () => {
     expect(list.startCycle().value).toBe('b');
   });
 });
+
+describe('print', () => {
+  test('it should return an array of node values for the list', () => {
+    const list = new List();
+    expect(List.print(list)).toEqual([]);
+    list.addToTail(1);
+    expect(List.print(list)).toEqual([1]);
+    list.addToTail(2);
+    expect(List.print(list)).toEqual([1, 2]);
+    list.removeHead();
+    expect(List.print(list)).toEqual([2]);
+  });
+});

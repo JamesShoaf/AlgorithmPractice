@@ -61,6 +61,16 @@ class SinglyLinkedList {
     }
     return null;
   }
+
+  static print(list) {
+    const output = [];
+    let { head: node } = list;
+    while (node) {
+      output.push(node.value);
+      node = node.next;
+    }
+    return output;
+  }
 }
 
 module.exports = SinglyLinkedList;
