@@ -52,6 +52,15 @@ class BinaryTree {
     return height;
   }
 
+  isBalanced() {
+    const left = (this.left === null) ? -1 : this.left.height();
+    const right = (this.right === null) ? -1 : this.right.height();
+    if (Math.abs(left - right) > 1) return false;
+    if (this.left !== null && !this.left.isBalanced()) return false;
+    if (this.right !== null && !this.right.isBalanced()) return false;
+    return true;
+  }
+
   static isSuperBalanced(tree) {
     let minLeafDepth;
     let maxLeafDepth;
