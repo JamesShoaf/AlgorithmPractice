@@ -40,6 +40,18 @@ class BinaryTree {
     return output;
   }
 
+  height() {
+    let height = 0;
+    const stack = [[this, 0]];
+    while (stack.length) {
+      const [node, nodeHeight] = stack.pop();
+      height = Math.max(height, nodeHeight);
+      if (node.left) stack.push([node.left, nodeHeight + 1]);
+      if (node.right) stack.push([node.right, nodeHeight + 1]);
+    }
+    return height;
+  }
+
   static isSuperBalanced(tree) {
     let minLeafDepth;
     let maxLeafDepth;

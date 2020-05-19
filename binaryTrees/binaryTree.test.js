@@ -45,6 +45,16 @@ describe('print', () => {
   });
 });
 
+describe('height', () => {
+  const expected = [2, 3, 1, 2, 2];
+  test('returns the height of the tree', () => {
+    testTrees.forEach((tree, index) => {
+      expect(tree.height()).toBe(expected[index]);
+    });
+  });
+});
+
+
 describe('isSuperBalanced', () => {
   const expected = [true, false, true, true, true];
   test('it should return whether the tree is superbalanced', () => {
