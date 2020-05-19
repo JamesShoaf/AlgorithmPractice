@@ -56,13 +56,17 @@ class BinaryTree {
     return Math.max(this.left?.recursiveHeight() ?? -1, this.right?.recursiveHeight() ?? -1) + 1;
   }
 
-  isBalanced() {
-    const left = (this.left === null) ? -1 : this.left.height();
-    const right = (this.right === null) ? -1 : this.right.height();
-    if (Math.abs(left - right) > 1) return false;
-    if (this.left !== null && !this.left.isBalanced()) return false;
-    if (this.right !== null && !this.right.isBalanced()) return false;
-    return true;
+  static isBalanced(tree) {
+    let isBalanced = true;
+    const heightChecker = (node) => {
+      if (node === null || !isBalanced) return 0;
+      const leftHeight = heightChecker(node.left);
+      const rightHeight = heightChecker(node.right);
+      if (Math.abs(leftHeight - rightHeight) > 1) isBalanced = false;
+      return Math.max(leftHeight, rightHeight) + 1;
+    };
+    heightChecker(tree);
+    return isBalanced;
   }
 
   static isSuperBalanced(tree) {

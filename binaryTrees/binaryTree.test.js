@@ -82,7 +82,7 @@ describe('isBalanced', () => {
   const expected = [true, false, true, true, true, true];
   test('it should return whether or not the tree is balanced', () => {
     testTrees.forEach((tree, index) => {
-      expect(tree.isBalanced()).toBe(expected[index]);
+      expect(BinaryTree.isBalanced(tree)).toBe(expected[index]);
     });
   });
 });
