@@ -52,6 +52,10 @@ class BinaryTree {
     return height;
   }
 
+  recursiveHeight() {
+    return Math.max(this.left?.recursiveHeight() ?? -1, this.right?.recursiveHeight() ?? -1) + 1;
+  }
+
   isBalanced() {
     const left = (this.left === null) ? -1 : this.left.height();
     const right = (this.right === null) ? -1 : this.right.height();

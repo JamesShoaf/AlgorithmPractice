@@ -69,6 +69,15 @@ describe('height', () => {
   });
 });
 
+describe('recursiveHeight', () => {
+  const expected = [2, 3, 1, 2, 2, 4];
+  test('it should return the height of the tree', () => {
+    testTrees.forEach((tree, index) => {
+      expect(tree.recursiveHeight()).toBe(expected[index]);
+    });
+  });
+});
+
 describe('isBalanced', () => {
   const expected = [true, false, true, true, true, true];
   test('it should return whether or not the tree is balanced', () => {
