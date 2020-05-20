@@ -1,4 +1,4 @@
-const { BinaryTree } = require('./binaryTree');
+const { BinaryTree } = require('../binaryTree/binaryTree');
 
 class BalancedBinarySearchTree extends BinaryTree {
   constructor(val) {

@@ -1,12 +1,17 @@
 const {
   BinaryTree,
-} = require('./binaryTree');
+} = require('../binaryTree/binaryTree');
 
 class BinarySearchTree extends BinaryTree {
   addToTree(val) {
-    const node = (val instanceof BinaryTree)
+    if (Array.isArray(val)) {
+      const [value, ...rest] = val;
+      const valNode = this.addToTree(value);
+      return (rest.length) ? this.addToTree(rest) : valNode;
+    }
+    const node = (val instanceof BinarySearchTree)
       ? val
-      : new BinaryTree(val);
+      : new BinarySearchTree(val);
     if (node.val < this.val) {
       if (this.left === null) {
         this.left = node;
