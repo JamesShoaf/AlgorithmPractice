@@ -33,6 +33,28 @@ class BalancedBinarySearchTree extends BinaryTree {
     this.left = parent;
     return this;
   }
+
+  rotateLeft() {
+    const { left, right, parent } = this;
+    if (!parent) return right.rotateLeft();
+    const grandparent = parent.parent;
+    parent.parent = this;
+    this.parent = grandparent;
+    if (grandparent) {
+      if (grandparent.left === parent) grandparent.left = this;
+      else grandparent.right = this;
+    }
+    if (parent.left === this) {
+      if (right) right.parent = parent;
+      parent.left = right;
+      this.right = parent;
+      return this;
+    }
+    if (left) left.parent = parent;
+    parent.right = left;
+    this.left = parent;
+    return this;
+  }
 }
 
 module.exports = { BalancedBinarySearchTree };
