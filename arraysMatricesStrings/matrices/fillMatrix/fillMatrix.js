@@ -1,4 +1,4 @@
-const fillGrid = (...args) => {
+const fillMatrix = (...args) => {
   // assign values to rows, cols, and fill for either options object
   // or positional parameters
   const [rows, cols, fill = 0] = (typeof args[0] === 'object')
@@ -21,6 +21,4 @@ const fillGrid = (...args) => {
       .map(() => fill));
 };
 
-module.exports = {
-  fillGrid,
-};
+module.exports = { fillMatrix };

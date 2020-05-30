@@ -1,6 +1,4 @@
-const {
-  fillGrid,
-} = require('./fillGrid');
+const { fillMatrix } = require('./fillMatrix');
 
 const testTuples = [
   [
@@ -53,12 +51,12 @@ const invalidInputs = [
 describe('fillGrid', () => {
   test('it should throw an error if given invalid input', () => {
     invalidInputs.forEach((badInput) => {
-      expect(() => fillGrid([1, badInput])).toThrow();
-      expect(() => fillGrid([badInput, 1])).toThrow();
+      expect(() => fillMatrix([1, badInput])).toThrow();
+      expect(() => fillMatrix([badInput, 1])).toThrow();
     });
   });
 
-  const received = testTuples.map((tuple) => fillGrid(...tuple[0]));
+  const received = testTuples.map((tuple) => fillMatrix(...tuple[0]));
   test('it should return an array', () => {
     received.forEach((result) => {
       expect(Array.isArray(result)).toBe(true);
