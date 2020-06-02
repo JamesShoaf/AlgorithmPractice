@@ -104,3 +104,12 @@ describe('isValidBinarySearchTree', () => {
     });
   });
 });
+
+describe('isSymmetrical', () => {
+  const expected = [false, false, false, true, true, false];
+  test('it should return whether the tree is symmetrical', () => {
+    testTrees.forEach((tree, index) => {
+      expect(tree.isSymmetrical()).toBe(expected[index]);
+    });
+  });
+});

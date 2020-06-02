@@ -56,6 +56,16 @@ class BinaryTree {
     return Math.max(this.left?.recursiveHeight() ?? -1, this.right?.recursiveHeight() ?? -1) + 1;
   }
 
+  isSymmetrical() {
+    const symmetricalHelper = (left, right) => {
+      if (left === null && right === null) return true;
+      if (left === null || right === null) return false;
+      return (symmetricalHelper(left.right, right.left)
+        && symmetricalHelper(left.left, right.right))
+    }
+    return symmetricalHelper(this.left, this.right);
+  }
+
   static isBalanced(tree) {
     let isBalanced = true;
     const heightChecker = (node) => {
