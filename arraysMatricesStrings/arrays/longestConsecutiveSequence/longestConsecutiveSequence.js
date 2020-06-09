@@ -3,33 +3,24 @@ Given an unsorted array of integers, find the length of the longest consecutive 
 */
 
 const longestConsecutiveSequence = (nums) => {
+  // add each integer to a set
+  const set = new Set(nums);
+
   const { length } = nums;
-  if (length < 2) return length;
-  const [first] = nums;
-  const set = new Set();
-  let highest = first;
-  let lowest = first;
+  let longestRun = 0;
+  // for each integer in the array
   for (let i = 0; i < length; i += 1) {
     const currentInt = nums[i];
-    if (currentInt > highest) highest = currentInt;
-    if (currentInt < lowest) lowest = currentInt;
-    set.add(currentInt);
-  }
-  let last = lowest;
-  let longestRun = 1;
-  let currentRun = 1;
-  for (let i = lowest + 1; i <= highest; i += 1) {
-    if (set.has(i)) {
-      if (last === i - 1) {
-        currentRun += 1;
-        if (currentRun > longestRun) longestRun = currentRun;
-      }
-      if (last !== i - 1) {
-        currentRun = 1;
-      }
-      last = i;
+    // for each start of a run (n - 1 not in the set)
+    if (!set.has(currentInt - 1)) {
+      // iterate through sequential numbers to find how many are in the current run
+      let currentRun = 1;
+      for (let j = currentInt; set.has(j + 1); j += 1) currentRun += 1;
+      // then update the longest run
+      if (currentRun > longestRun) longestRun = currentRun;
     }
   }
+  // return the longest run
   return longestRun;
 };
 
