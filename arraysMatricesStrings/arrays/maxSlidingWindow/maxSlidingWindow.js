@@ -30,6 +30,10 @@ class QueueNode {
     if (lower) lower.higher = higher;
     if (older) older.newer = newer;
     if (newer) newer.older = older;
+    this.higher = null;
+    this.lower = null;
+    this.older = null;
+    this.newer = null;
   }
 }
 
@@ -38,6 +42,7 @@ const maxSlidingWindow = (nums, k) => {
   if (k === 0 || length === 0 || k > length) return [];
   const maxWindow = [];
   const firstNode = new QueueNode(nums[0], 0);
+  const nodes = [firstNode];
   let highest = firstNode;
   let lowest = firstNode;
   let oldest = firstNode;
@@ -48,22 +53,39 @@ const maxSlidingWindow = (nums, k) => {
     // create a new node for the integer and add it as the newest node
     const int = nums[i];
     const current = new QueueNode(int, i);
+    nodes.push(current);
     newest.newer = current;
     current.older = newest;
     newest = current;
     // if the value of the new node is greater than or equal to the current highest,
-    // set the highest node's high pointer to the new node, and set the highest
-    // pointer to the new node.
     if (int >= highest.val) {
+      // set the highest node's high pointer to the new node
       highest.higher = current;
       current.lower = highest;
+      // and remove all lower previous nodes
+      while (int >= highest.val && highest !== current) {
+        // set a temporary pointer to the highest node
+        const toDelete = highest;
+        // reassign the pointer to the oldest node
+        if (oldest === highest) oldest = oldest.newer;
+        // reassign the pointers to the highest and lowest node
+        if (highest === lowest) {
+          lowest = current;
+          highest = current;
+        } else {
+          highest = highest.lower;
+        }
+        // delete the previous highest node
+        toDelete.delete();
+      }
+      // and set the current node as the new highest
       highest = current;
     }
     // if the node is less than the current highest node, add it as the lower of the previous lowest
-    // if the node's value is greater than the previous least node's value, remove that node
     if (int < highest.val) {
       lowest.lower = current;
       current.higher = lowest;
+      // if the newest node's value is greater than the lowest node's value, remove the lowest
       while (int >= lowest.val) {
         const toDelete = lowest;
         lowest = lowest.higher;
@@ -71,15 +93,14 @@ const maxSlidingWindow = (nums, k) => {
       }
       lowest = current;
     }
-    // if the oldest node is outside the frame
+    // next, remove the oldest node if its index is outside the frame
     while (i >= oldest.index + k) {
       const toDelete = oldest;
-      // if the oldest node is the highest, set the highest to that node's lower neighbor
+      // reassign the highest
       if (highest === oldest) highest = highest.lower;
-      // also fix the pointer to the lowest node
-      if (lowest === oldest) lowest = lowest.higher;
-      // in either case, remove the old node and update the reference to the oldest node
+      // reassign the oldest
       oldest = oldest.newer;
+      // and delete the previous oldest
       toDelete.delete();
     }
     // finally, push the highest node's value to the output
@@ -88,16 +109,5 @@ const maxSlidingWindow = (nums, k) => {
   // return output
   return maxWindow;
 };
-
-// const test = [
-//   -95, 92, -85, 59, -59, -14, 88, -39, 2, 92, 94, 79, 78, -58, 37, 48, 63, -91, 91, 74, -28, 39,
-//   90, -9, -72, -88, -72, 93, 38, 14, -83, -2, 21, 4, -75, -65, 3, 63, 100, 59, -48, 43, 35, -49,
-//   48, -36, -64, -13, -7, -29, 87, 34, 56, -39, -5, -27, -28, 10, -57, 100, -43, -98, 19, -59,
-//   78, -28, -91, 67, 41, -64, 76, 5, -58, -89, 83, 26, -7, -82, -32, -76, 86, 52, -6, 84, 20, 51,
-//   -86, 26, 46, 35, -23, 30, -51, 54, 19, 30, 27, 80, 45, 22,
-// ];
-// const windowSize = 10;
-// const arr = maxSlidingWindow(test, windowSize);
-// console.log(arr);
 
 module.exports = { maxSlidingWindow };
