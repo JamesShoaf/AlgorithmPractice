@@ -46,28 +46,32 @@ const minimumWindowSubstring = (s, t) => {
   let bestEnd = end;
   // end of phase 1
 
-  // alternate phases 2 and 3 to the end of s
+  // alternate phases 2 and 3 to the end of s while the frame is larger than the minimum
   const unmatchedStack = [];
-  while (end < sLength && end - start >= tLength - 1) {
+  while (end - start >= tLength - 1) {
+    // if phase 3 was skipped, due to reaching the last index, run phase 2 once and return
+    if (unmatchedStack.length) return s.slice(bestStart, bestEnd + 1);
     // Phase 2: shrink the window until it is no longer valid
-    // iterate the start pointer forward, until removing the character just prior to start
-    do {
+    // iterate the start pointer forward, until the window is invalid
+    while (end - start >= tLength - 1) {
       start += 1;
       const char = s[start - 1];
       if (counts[char] !== undefined) {
         counts[char] += 1;
-        // add that character to the unmatched stack
-        unmatchedStack.push(char);
-        // store start - 1 and end as the current best start and end
-        bestStart = start - 1;
-        bestEnd = end;
-        break;
+        // if the character is unmatched, add it to the unmatched stack
+        if (counts[char] > 0) {
+          unmatchedStack.push(char);
+          // store start - 1 and end as the current best start and end
+          bestStart = start - 1;
+          bestEnd = end;
+          break;
+        }
       }
-    } while (start < end);
+    }
 
     // Phase 3: shift the window forward to find a new valid window
     // move start and end forward, removing start - 1, and adding end
-    do {
+    while (end < sLength - 1) {
       start += 1;
       end += 1;
       const startChar = s[start - 1];
@@ -96,14 +100,10 @@ const minimumWindowSubstring = (s, t) => {
           if (unmatchedStack.length === 0) break;
         }
       }
-    } while (end < sLength);
+    }
   }
 
   return s.slice(bestStart, bestEnd + 1);
 };
-
-const stringA = 'ab';
-const stringB = 'b';
-minimumWindowSubstring(stringA, stringB);
 
 module.exports = { minimumWindowSubstring };

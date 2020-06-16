@@ -26,6 +26,26 @@ const testTuples = [
     'B',
     'B',
   ],
+  [
+    'BBA',
+    'AB',
+    'BA',
+  ],
+  [
+    'BBAA',
+    'AB',
+    'BA',
+  ],
+  [
+    'BB',
+    'B',
+    'B',
+  ],
+  [
+    'B',
+    'B',
+    'B',
+  ],
 ];
 
 describe('minimumWindowSubstring', () => {
@@ -38,5 +58,6 @@ describe('minimumWindowSubstring', () => {
   test('it should return an empty string if no window exists', () => {
     expect(minimumWindowSubstring('ADOBECODEBANC', 'X')).toBe('');
     expect(minimumWindowSubstring('ADOBECODEBANC', 'AG')).toBe('');
+    expect(minimumWindowSubstring('', 'B')).toBe('');
   });
 });
