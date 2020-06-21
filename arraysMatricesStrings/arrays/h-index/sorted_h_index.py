@@ -19,8 +19,3 @@ class Solution:
             if mid_val > vals_mid_or_greater:
                 if mid == low: return N - low
                 high = mid
-
-# solver = Solution()
-# papers = [0, 2, 2]
-# answer = solver.solve(papers)
-# print(answer)

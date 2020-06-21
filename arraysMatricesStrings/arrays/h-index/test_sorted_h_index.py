@@ -1,9 +1,8 @@
-taget = __import__("sorted")
-from sorted import h_index
+from sorted_h_index import Solution
 import unittest
 
 class TestHIndex (unittest.TestCase):
-    solver = h_index.Solution()
+    solver = Solution()
     def test_zero(self):
         test_tuples = [
             ([], 0),
@@ -14,7 +13,6 @@ class TestHIndex (unittest.TestCase):
             self.assertEqual(self.solver.solve(arr), expected)
     
     def test_nonzero(self):
-        # solver = Solution()
         test_tuples = [
             ([1], 1),
             ([2], 1),

@@ -1,9 +1,10 @@
-from . import longest_duplicate_substring
 import unittest
+from longest_duplicate_substring import Solution 
 
 class TestLongestDuplicateSubstring(unittest.TestCase):
-    solver = longest_duplicate_substring.Solution()
-    def test_empty(self):
+    solver = Solution()
+    def test_no_duplicates(self):
+        'it should return an empty string if there are no duplicate substrings'
         test_tuples = [
             ('', ''),
             ('abcd', ''),
@@ -12,6 +13,7 @@ class TestLongestDuplicateSubstring(unittest.TestCase):
             self.assertEqual(self.solver.longestDupSubstring(string), expected)
     
     def test_non_overlapping(self):
+        'it should return the correct duplicate substring'
         test_tuples = [
             ('abcda', 'a'),
             ('abcdea', 'a'),
@@ -22,6 +24,7 @@ class TestLongestDuplicateSubstring(unittest.TestCase):
             self.assertEqual(self.solver.longestDupSubstring(string), expected)
 
     def test_overlapping(self):
+        'it should return the correct duplicate substring'
         test_tuples = [
             ('banana', 'ana'),
             ('bannanna', 'anna'),
@@ -30,5 +33,5 @@ class TestLongestDuplicateSubstring(unittest.TestCase):
         for string, expected in test_tuples:
             self.assertEqual(self.solver.longestDupSubstring(string), expected)
     
-    if __name__ == '__main__':
-        unittest.main()
+if __name__ == '__main__':
+    unittest.main()

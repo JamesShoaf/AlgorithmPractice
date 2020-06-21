@@ -34,4 +34,4 @@ class TestPermutationSequence(unittest.TestCase):
             self.assertEqual(self.solver.getPermutation(n, k), expected)
 
 if __name__ == '__main__':
-        unittest.main()
+    unittest.main()
