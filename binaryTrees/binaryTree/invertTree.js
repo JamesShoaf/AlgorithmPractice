@@ -1,10 +1,10 @@
 const invertTree = (root) => {
-  const queue = [];
-  if (root) queue.push(root);
-  while (queue.length) {
-    const node = queue.pop();
-    if (node.left) queue.push(node.left);
-    if (node.right) queue.push(node.right);
+  const stack = [];
+  if (root) stack.push(root);
+  while (stack.length) {
+    const node = stack.pop();
+    if (node.left) stack.push(node.left);
+    if (node.right) stack.push(node.right);
     [node.left, node.right] = [node.right, node.left];
   }
   return root;
