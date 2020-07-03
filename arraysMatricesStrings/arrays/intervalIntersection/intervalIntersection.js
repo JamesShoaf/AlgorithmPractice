@@ -41,6 +41,4 @@ const intervalIntersection = (intervalA, intervalB) => {
   return output; // return empty intersection if either intA or intB is empty
 };
 
-intervalIntersection(intA, intB);
-
 module.exports = { intervalIntersection };
