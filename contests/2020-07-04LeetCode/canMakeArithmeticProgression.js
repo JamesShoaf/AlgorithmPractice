@@ -15,3 +15,5 @@ const canMakeArithmeticProgression = (arr) => {
   }
   return true;
 };
+
+module.exports = { canMakeArithmeticProgression };

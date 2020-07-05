@@ -40,10 +40,4 @@ const getLastMoment = (n, left, right) => {
   }
 };
 
-// const n = 4;
-// const left = [4, 3];
-// const right = [0, 1];
-// const output = getLastMoment(n, left, right);
-// console.log(output);
-
 module.exports = { getLastMoment };
