@@ -117,17 +117,26 @@ class BinaryTree {
   }
 
   static width(root) {
-    let currentLevel = [];
-    if (root) currentLevel.push([root, 0]);
-    let maxWidth = 0;
+    // if passed null, the width is 0
+    if (!root) return 0;
+    let rootNode = root;
+    // slide the root down the tree until a node with both a left and right child is found
+    while (!rootNode.left || !rootNode.right) {
+      if (!rootNode.left) {
+        // if there is no such node, the tree's max width is 1
+        if (!rootNode.right) return 1;
+        rootNode = rootNode.right;
+      } else rootNode = rootNode.left;
+    }
+    let currentLevel = [[rootNode, 0]];
+    let maxWidth = 1;
     while (currentLevel.length) {
       const { length } = currentLevel;
-      let leftMostIndex = Number.POSITIVE_INFINITY;
+      const leftMostIndex = currentLevel[0][1];
       let rightMostIndex = -1;
       const nextLevel = [];
       for (let i = 0; i < length; i += 1) {
         const [currentNode, currentIndex] = currentLevel[i];
-        leftMostIndex = Math.min(leftMostIndex, currentIndex);
         rightMostIndex = Math.max(rightMostIndex, currentIndex);
         if (currentNode.left) nextLevel.push([currentNode.left, currentIndex * 2]);
         if (currentNode.right) nextLevel.push([currentNode.right, currentIndex * 2 + 1]);
