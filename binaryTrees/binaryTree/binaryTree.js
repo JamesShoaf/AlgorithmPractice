@@ -61,8 +61,8 @@ class BinaryTree {
       if (left === null && right === null) return true;
       if (left === null || right === null) return false;
       return (symmetricalHelper(left.right, right.left)
-        && symmetricalHelper(left.left, right.right))
-    }
+        && symmetricalHelper(left.left, right.right));
+    };
     return symmetricalHelper(this.left, this.right);
   }
 
@@ -114,6 +114,28 @@ class BinaryTree {
       if (right !== null) stack.push([right, val, upperBound]);
     }
     return true;
+  }
+
+  static width(root) {
+    let currentLevel = [];
+    if (root) currentLevel.push([root, 0]);
+    let maxWidth = 0;
+    while (currentLevel.length) {
+      const { length } = currentLevel;
+      let leftMostIndex = Number.POSITIVE_INFINITY;
+      let rightMostIndex = -1;
+      const nextLevel = [];
+      for (let i = 0; i < length; i += 1) {
+        const [currentNode, currentIndex] = currentLevel[i];
+        leftMostIndex = Math.min(leftMostIndex, currentIndex);
+        rightMostIndex = Math.max(rightMostIndex, currentIndex);
+        if (currentNode.left) nextLevel.push([currentNode.left, currentIndex * 2]);
+        if (currentNode.right) nextLevel.push([currentNode.right, currentIndex * 2 + 1]);
+      }
+      maxWidth = Math.max(maxWidth, rightMostIndex - leftMostIndex + 1);
+      currentLevel = nextLevel;
+    }
+    return maxWidth;
   }
 }
 

@@ -113,3 +113,12 @@ describe('isSymmetrical', () => {
     });
   });
 });
+
+describe('width', () => {
+  const expected = [2, 2, 1, 4, 4, 7];
+  test('it should return the maximum width of the tree', () => {
+    testTrees.forEach((tree, index) => {
+      expect(BinaryTree.width(tree)).toBe(expected[index]);
+    });
+  });
+});
