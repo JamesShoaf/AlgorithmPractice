@@ -122,3 +122,12 @@ describe('width', () => {
     });
   });
 });
+
+describe('isSameTree', () => {
+  test('it should return false if passed nonidentical trees', () => {
+    expect(BinaryTree.isSameTree(treeA, treeF)).toBe(false);
+  });
+  test('it should return true if passed identical trees', () => {
+    expect(BinaryTree.isSameTree(treeF, treeF)).toBe(true);
+  });
+});

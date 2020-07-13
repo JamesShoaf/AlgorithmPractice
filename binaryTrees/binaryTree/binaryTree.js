@@ -146,6 +146,13 @@ class BinaryTree {
     }
     return maxWidth;
   }
+
+  static isSameTree(treeA, treeB) {
+    if (!treeA && !treeB) return true;
+    if (!treeA || !treeB || treeA.val !== treeB.val) return false;
+    return BinaryTree.isSameTree(treeA.left, treeB.left)
+      && BinaryTree.isSameTree(treeA.right, treeB.right);
+  }
 }
 
 module.exports = {
