@@ -2,12 +2,7 @@ struct Solution {}
 
 impl Solution {
     pub fn reverse_words(s: String) -> String {
-        let mut output: String = s.split(' ')
-            .filter(|word| word.len() > 0)
-            .rev()
-            .fold(String::new(), |s, word| s + &word + " ");
-        output.pop();
-        output
+        s.split_whitespace().rev().collect::<Vec<&str>>().join(" ")
     }
 }
 
