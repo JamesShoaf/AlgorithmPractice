@@ -9,27 +9,15 @@ impl Solution {
         let mut output: Vec<char> = Vec::new();
         let mut carry_bit = false;
         while a_next.is_some() || b_next.is_some() {
-            let mut counter = 0;
-            if carry_bit { counter += 1 }
-            carry_bit = false;
+            let mut counter = carry_bit as u32;
             if let Some('1') = a_next { counter += 1}
             if let Some('1') = b_next { counter += 1}
-            match counter {
-                1 => output.push('1'),
-                2 => {
-                    carry_bit = true;
-                    output.push('0');
-                }
-                3 => {
-                    carry_bit = true;
-                    output.push('1');
-                }
-                _ => output.push('0'),
-            }
+            output.push(std::char::from_digit(counter % 2, 2).unwrap());
+            carry_bit = counter >= 2;
             a_next = a_chars.next();
             b_next = b_chars.next();
         }
-        if carry_bit { output.push('1'); }
+        output.push(std::char::from_digit(carry_bit as u32, 2).unwrap());
         output.iter().rev().collect()
     }
 }
