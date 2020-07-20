@@ -9,9 +9,8 @@ impl Solution {
         if nums.len() as i32 == k { return nums; }
         let mut map: HashMap<i32, i32> = HashMap::new();
         for num in nums {
-            if let Some(val) = map.insert(num, 1) {
-                map.insert(num, val + 1);
-            }
+            let count = map.entry(num).or_insert(0);
+            *count += 1;
         }
         let mut heap: BinaryHeap<(i32, i32)> = BinaryHeap::new();
         for (val, count) in &map {
@@ -26,13 +25,11 @@ impl Solution {
     }
 
     pub fn top_k_frequent(nums: Vec<i32>, k: i32) -> Vec<i32> {
-        let length = nums.len() as i32;
-        if length == k { return nums; }
+        if nums.len() as i32 == k { return nums; }
         let mut map: HashMap<i32, i32> = HashMap::new();
         for num in nums {
-            if let Some(val) = map.insert(num, 1) {
-                map.insert(num, val + 1);
-            }
+            let count = map.entry(num).or_insert(0);
+            *count += 1;
         }
         
         let mut map = map.into_iter().collect::<Vec<(i32, i32)>>();
