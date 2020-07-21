@@ -42,56 +42,40 @@ impl Solution {
         }
         output
     }
-    // pub fn remove_elements(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
-    //     // set a new pointer to the head
-    //     let mut start: Option<Box<ListNode>> = head.clone();
-    //     // while the value of the pointer's node is the value to be removed, move the pointer ahead
-    //     loop {
-    //         let start_clone = start.clone();
-    //         match start_clone {
-    //             None => break,
-    //             Some(boxed_node) => {
-    //                 let node: ListNode = *boxed_node;
-    //                 if node.val == val { start = node.next; } else { break; }
-    //             }
-    //         }
-    //     }
-    //     // if no valid starting pointer is found, return None
-    //     if start.is_none() { return None; }
-    //     // otherwise, hold onto the starting pointer to return it in the last step
-    //     // set a mutable reference, prev, to the starting pointer
-    //     let mut prev: Option<Box<ListNode>> = start.clone();
-    //     // while the prev pointer points to a node
-    //     loop {
-    //         match prev {
-    //             None => break,
-    //             Some(boxed_prev) => {
-    //                 // set a reference, next, to the starting pointer's next node
-    //                 let mut prev_node: ListNode = *boxed_prev;
-    //                 let mut next: Option<Box<ListNode>> = prev_node.next;
-    //                 prev_node.next = loop {
-    //                     // advance the pointer until a value other than the one to be removed is found
-    //                     let next_clone = next.clone()
-    //                     match next_clone {
-    //                         None => break None,
-    //                         Some(boxed_next) => {
-    //                             let next_node: ListNode = *boxed_next;
-    //                             if next_node.val == val { next = next_node.next; }
-    //                             else { break next; }
-    //                         }
-    //                     }
-    //                 };
-    //                 // set the prev node's next value to next
-    //                 prev_node.val += 1;
-    //                 prev_node.next = next.clone();
-    //                 // and advance the prev pointer
-    //                 prev = next;
-    //             }
-    //         }
-    //     }
-    //     // return the starting pointer
-    //     start
-    // }
+
+    pub fn remove_elements_2(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
+        // set a new pointer to the head
+        let mut start: Option<Box<ListNode>> = head;
+        // while the value of the pointer's node is the value to be removed, move the pointer ahead
+        loop {
+            let start_clone = start.clone();
+            match start_clone {
+                None => break,
+                Some(start_ptr) => {
+                    let node: ListNode = *start_ptr;
+                    if node.val == val { start = node.next.clone(); } else { break; }
+                }
+            }
+        }
+        // if no valid starting pointer is found, return None
+        if start.is_none() { return None; }
+
+        let mut prev = &mut start;
+
+        while prev.is_some() {
+            if let Some(prev_ptr) = &mut prev {
+                loop {
+                    if let Some(next_ptr) = &prev_ptr.next {
+                        if next_ptr.val == val {
+                            prev_ptr.next = next_ptr.next.clone();
+                        } else { break; }
+                    } else { break; }
+                };
+                prev = &mut prev.as_mut().unwrap().next;
+            }
+        }
+        start
+    }
 }
 
 fn main() {
@@ -108,7 +92,7 @@ fn main() {
     six_one.next = Some(Box::new(three));
     two.next = Some(Box::new(six_one));
     one.next = Some(Box::new(two));
-    let mut output = Solution::remove_elements(Some(Box::new(one)), 6);
+    let mut output = Solution::remove_elements_2(Some(Box::new(one)), 6);
     loop {
         let output_clone = output.clone();
         match output_clone {
