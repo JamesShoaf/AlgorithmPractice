@@ -1,4 +1,4 @@
-/* 
+/*
 Run-length encoding is a string compression method that works by replacing consecutive identical
 characters (repeated 2 or more times) with the concatenation of the character and the number
 marking the count of the characters (length of the run). For example, to compress the string
@@ -13,38 +13,36 @@ run-length encoded version of s has minimum length.
 Find the minimum length of the run-length encoded version of s after deleting at most k characters.
 */
 
-const compressString = (s) => {
-  const { length } = s;
-  let lastCharacter;
-  let repeatCount = 0;
-  let compressed = '';
-  for (let i = 0; i < length; i += 1) {
-    if (s[i] !== lastCharacter) {
-      if (repeatCount > 1) { compressed += repeatCount.toString(10); }
-      repeatCount = 1;
-      lastCharacter = s[i];
-      compressed += s[i];
-    } else {
-      repeatCount += 1;
-    }
-  }
-  if (repeatCount > 1) { compressed += repeatCount.toString(10); }
-  return compressed;
-};
-
 const getLengthOfOptimalCompression = (s, k) => {
-  if (k === 0) return compressString(s).length;
   const { length } = s;
-  let lastCharacter;
-  let shortest = length;
-  for (let i = 0; i < length; i += 1) {
-    if (lastCharacter !== s[i]) {
-      lastCharacter = s[i];
-      const truncated = s.slice(0, i) + s.slice(i + 1, length);
-      shortest = Math.min(shortest, getLengthOfOptimalCompression(truncated, k - 1));
+  if (k >= length) return 0;
+  // create a set of values which incur a length cost for repeated characters
+  const lengthCost = new Set([1]);
+  // eg, for a string of 1000 As, the length increases would occur at A, A2, A10, A100, and A1000
+  for (let i = 10; i < length; i *= 10) lengthCost.add(i - 1);
+  // start index, last letter added to string, repeated letter count, deletions left
+  const compressedLength = (start, last, count, left) => {
+    // set an infinite cost for deleting more than k letters
+    if (left < 0) return Infinity;
+    // stop incrementing the count of the string when the end is reached
+    if (start >= length) return 0;
+    // if the current character is the same as the last character added, it's always best to
+    // add it and compress it
+    if (s[start] === last) {
+      return compressedLength(start + 1, last, count + 1, left) + Number(lengthCost.has(count));
     }
-  }
-  return shortest;
+    // if the current character is different than the last character added
+    return Math.min(
+      // compare adding the new character to the string
+      1 + compressedLength(start + 1, s[start], 1, left),
+      // to deleting the new character from the string
+      compressedLength(start + 1, last, count, left - 1),
+    );
+  };
+  return compressedLength(0, '', 0, k);
 };
 
-getLengthOfOptimalCompression('abbbbbbbbbba', 2);
+getLengthOfOptimalCompression(
+  'abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy',
+  99,
+);
