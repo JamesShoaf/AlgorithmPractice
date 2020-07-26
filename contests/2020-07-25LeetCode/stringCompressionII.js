@@ -16,30 +16,45 @@ Find the minimum length of the run-length encoded version of s after deleting at
 const getLengthOfOptimalCompression = (s, k) => {
   const { length } = s;
   if (k >= length) return 0;
-  // create a set of values which incur a length cost for repeated characters
-  const lengthCost = new Set([1]);
-  // eg, for a string of 1000 As, the length increases would occur at A, A2, A10, A100, and A1000
-  for (let i = 10; i < length; i *= 10) lengthCost.add(i - 1);
-  // start index, last letter added to string, repeated letter count, deletions left
-  const compressedLength = (start, last, count, left) => {
-    // set an infinite cost for deleting more than k letters
-    if (left < 0) return Infinity;
-    // stop incrementing the count of the string when the end is reached
-    if (start >= length) return 0;
-    // if the current character is the same as the last character added, it's always best to
-    // add it and compress it
-    if (s[start] === last) {
-      return compressedLength(start + 1, last, count + 1, left) + Number(lengthCost.has(count));
+  // memoize the best compressed string length for strings from 0 to index j
+  // with 0 to k removed characters
+  const memo = [...Array(length)].map(() => [...Array(k + 1)]);
+
+  const charLength = (count) => ((count <= 2) ? count : Math.ceil(Math.log10(count + 1)) + 1);
+
+  const compressedLength = (index, remainingDeletes) => {
+    // if the end of the string is reached or all remaining characters can be deleted, return 0
+    if (index === length || length - index <= remainingDeletes) return 0;
+    // return memoized answers
+    if (memo[index][remainingDeletes]) return memo[index][remainingDeletes];
+    // count characters forward from the index, tracking how often the most frequent one appears
+    const frequencyCounter = {};
+    let most = 0;
+    // initialize output as uncompressed length
+    let output = length;
+    for (let i = index; i < length; i += 1) {
+      const char = s[i];
+      if (!frequencyCounter[char]) frequencyCounter[char] = 0;
+      frequencyCounter[char] += 1;
+      most = Math.max(most, frequencyCounter[char]);
+      // count how many characters other than the most frequent one appear
+      const charsToDelete = i - index + 1 - most;
+      if (remainingDeletes >= charsToDelete) {
+        // and compare the result of deleting those characters with the current best length
+        output = Math.min(
+          output,
+          charLength(most) + compressedLength(i + 1, remainingDeletes - charsToDelete),
+        );
+      // if there are more characters to delete in the remaining segment than can be deleted
+      // stop counting characters
+      } else { break; }
     }
-    // if the current character is different than the last character added
-    return Math.min(
-      // compare adding the new character to the string
-      1 + compressedLength(start + 1, s[start], 1, left),
-      // to deleting the new character from the string
-      compressedLength(start + 1, last, count, left - 1),
-    );
+    // memoize the result and return it
+    memo[index][remainingDeletes] = output;
+    return output;
   };
-  return compressedLength(0, '', 0, k);
+
+  return compressedLength(0, k);
 };
 
 getLengthOfOptimalCompression(
