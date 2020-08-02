@@ -10,47 +10,44 @@ struct Solution {}
 
 impl Solution {
     pub fn min_swaps(grid: Vec<Vec<i32>>) -> i32 {
-        let dimensions = grid.len();
-        let mut terminal_zero_count: Vec<i32> = Vec::new();
-        let mut count_counts: Vec<i32> = vec![0; dimensions + 1];
+        let len = grid.len();
+        let mut zero_count: Vec<i32> = Vec::new();
         for row in grid {
-            // println!("row: {:?}", row);
-            let mut zero_count = 0;
-            for i in 0..dimensions {
-                if row[dimensions - i - 1] == 1 { break; }
-                zero_count += 1;
+            let mut row_count = 0;
+            for i in 0..len {
+                if row[len - i - 1] == 1 { break; }
+                row_count += 1;
             }
-            // println!("zero_count: {}", zero_count);
-            terminal_zero_count.push(zero_count);
-            count_counts[zero_count as usize] += 1;
-            // println!("counts: {:?}", count_counts);
-            if count_counts[zero_count as usize] > zero_count + 1 { return -1;}
+            zero_count.push(row_count);
         }
         let mut shift_count = 0;
-        // let mut test_counter = 0;
-        loop {
-            // println!("{:?}", terminal_zero_count);
-            // test_counter += 1;
-            let mut no_shifts = true;
-            for i in 0..dimensions - 1 {
-                if terminal_zero_count[i] < (dimensions - i - 1) as i32 {
-                    let temp = terminal_zero_count[i];
-                    terminal_zero_count[i] = terminal_zero_count[i + 1];
-                    terminal_zero_count[i + 1] = temp;
+        for i in 0..len {
+            let target = (len - i - 1) as i32;
+            if zero_count[i] < target {
+                let j = {
+                    let mut index = len;
+                    for j in i + 1..len {
+                        if zero_count[j] >= target {
+                            index = j;
+                            break;
+                        }
+                    }
+                    if index == len { return -1; }
+                    index
+                };
+                for k in (i..j).rev() {
+                    let temp = zero_count[k];
+                    zero_count[k] = zero_count[k + 1];
+                    zero_count[k + 1] = temp;
                     shift_count += 1;
-                    no_shifts = false;
                 }
             }
-            if no_shifts { break; }
-            // if test_counter > dimensions * dimensions { break; }
         }
         shift_count
     }
 }
 
 fn main() {
-    // let grid = vec![vec![0,0,1],vec![1,1,0],vec![1,0,0]];
-    // Solution::min_swaps(grid);
     let test_tuples = vec![
         (vec![vec![0,0,1],vec![1,1,0],vec![1,0,0]], 3),
         (vec![vec![0,1,1,0],vec![0,1,1,0],vec![0,1,1,0],vec![0,1,1,0]], -1),
