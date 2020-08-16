@@ -11,14 +11,10 @@ fn max_profit(prices: Vec<i32>) -> i32 {
     let mut b2 = i32::MAX;
     let mut s2 = 0;
     for p in prices {
-        let next_b1 = min(b1, p);
-        let next_s1 = max(s1, p - b1);
-        let next_b2 = min(b2, p - s1);
-        let next_s2 = max(s2, p - b2);
-        b1 = next_b1;
-        s1 = next_s1;
-        b2 = next_b2;
-        s2 = next_s2;
+        b1 = min(b1, p);
+        s1 = max(s1, p - b1);
+        b2 = min(b2, p - s1);
+        s2 = max(s2, p - b2);
     }
     s2
 }
