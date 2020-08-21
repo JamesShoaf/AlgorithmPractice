@@ -98,3 +98,18 @@ describe('print', () => {
     expect(List.print(list)).toEqual([2]);
   });
 });
+
+describe('fromArray', () => {
+  test('it should convert an array of values to a list', () => {
+    const testArrays = [
+      [],
+      [1],
+      [1, 2],
+      [1, 2, 3, 4, 5, 6, 7, 8],
+      ['foo', true, false, Symbol('bar'), {}, []],
+    ];
+    testArrays.forEach((arr) => {
+      expect(List.print(List.fromArray(arr))).toEqual(arr);
+    });
+  });
+});

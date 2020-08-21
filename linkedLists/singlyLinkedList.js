@@ -73,16 +73,9 @@ class SinglyLinkedList {
   }
 
   static fromArray(arr) {
-    if (arr.length === 0) { return null; }
-    const [first, ...rest] = arr;
-    let head = new SinglyLinkedList(first);
-    let tail = head;
-    rest.forEach((val) => {
-      const node = new Node(val);
-      tail.next = node;
-      tail = node;
-    });
-    return head;
+    const list = new SinglyLinkedList();
+    arr.forEach((val) => list.addToTail(val));
+    return list;
   }
 }
 
