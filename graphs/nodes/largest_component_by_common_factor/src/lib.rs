@@ -31,38 +31,37 @@ An alternative approach is Union-Find (or Disjoint Set). This takes O(MAX) space
 where MAX is the maximum value of elements in the array.
 */
 
-fn find(n: i32, parent: &mut [i32;100001]) -> i32 {
-    let n = n as usize;
-    if parent[n] == -1 { return n as i32; }
+fn find(n: usize, parent: &mut [usize;100001]) -> usize {
+    if parent[n] == 0 { return n; }
     parent[n] = find(parent[n], parent);
     return parent[n];
 }
 
-fn union(x: i32, y: i32, parent: &mut [i32;100001]) -> () {
+fn union(x: usize, y: usize, parent: &mut [usize;100001]) -> () {
     let xp = find(x, parent);
     let yp = find(y, parent);
     if xp != yp {
-        parent[yp as usize] = xp;
+        parent[yp] = xp;
     }
 }
 
 fn largest_component_size(a: Vec<i32>) -> i32 {
     use std::collections::HashMap;
     use std::cmp::max;
-    let mut parent: [i32; 100001] = [-1; 100001];
+    let mut parent: [usize; 100001] = [0; 100001];
     for n in a.iter() {
-        let n = *n;
-        for i in 2..=(n as f64).sqrt() as i32 {
+        let n = *n as usize;
+        for i in 2..=(n as f64).sqrt() as usize {
             if n % i == 0 {
                 union(i, n, &mut parent);
                 union(n, n/i, &mut parent);
             }
         }
     }
-    let mut map: HashMap<i32, i32> = HashMap::new();
+    let mut map: HashMap<usize, i32> = HashMap::new();
     let mut count = 0;
     for n in a {
-        let np = find(n, &mut parent);
+        let np = find(n as usize, &mut parent);
         let np_count = map.entry(np).or_insert(0);
         *np_count += 1;
         count = max(count, *np_count);
