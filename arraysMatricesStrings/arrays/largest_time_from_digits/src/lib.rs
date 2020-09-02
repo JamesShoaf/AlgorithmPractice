@@ -19,15 +19,16 @@ pub mod time_from_digits {
 
     impl NextOptions {
         fn new(remaining: usize, last: usize) -> NextOptions {
+            let mut spacer = String::from("");
             let max_val = match remaining {
                 4 => 3,
                 3 => {
+                    spacer += ":";
                     if last == 2 { 4 } else { 10 }
                 }
                 2 => 6,
                 _ => 10,
             };
-            let spacer = if remaining == 3 { String::from(":") } else { String::from("") };
             NextOptions {
                 max_val,
                 spacer,
