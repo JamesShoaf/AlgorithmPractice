@@ -1,61 +1,57 @@
-mod time_from_digits {
+pub mod time_from_digits {
     pub fn largest_time_from_digits(a: Vec<i32>) -> String {
-        if a.len() != 4 { return String::from(""); }
         let mut counts = [0; 10];
-        for num in a.iter() {
-            if *num > 9 || *num < 0 { return String::from(""); }
-            counts[*num as usize] += 1;
+        for num in a {
+            if num >= 0 && num < 10 {
+                counts[num as usize] += 1;
+            }
         }
-        if let Some(time) = choose_hour_10s(&mut counts) {
+        let init = NextOptions::new(4, 0);
+        if let Some(time) = choose_next(init, &mut counts) {
             return time;
         }
         String::from("")
     }
 
-    fn choose_hour_10s(counts: &mut [i32; 10]) -> Option<String> {
-        for i in (0..3).rev() {
-            if counts[i] > 0 {
-                counts[i] -= 1;
-                if let Some(rest) = choose_hour_1s(i, counts) {
-                    return Some(format!("{}{}", i, rest));
+    struct NextOptions {
+        upper: usize,
+        spacer: String,
+        remaining: usize,
+    }
+
+    impl NextOptions {
+        fn new(remaining: usize, last: usize) -> NextOptions {
+            let upper = match remaining {
+                4 => 3,
+                3 => {
+                    if last == 2 { 4 } else { 10 }
                 }
-                counts[i] += 1;
+                2 => 6,
+                _ => 10,
+            };
+            let spacer = if remaining == 3 { String::from(":") } else { String::from("") };
+            NextOptions {
+                upper,
+                spacer,
+                remaining,
             }
         }
-        None
     }
-    
-    fn choose_hour_1s(tens: usize, counts: &mut [i32; 10]) -> Option<String> {
-        let upper = if tens == 2 { 4 } else { 10 };
-        for i in (0..upper).rev() {
+
+    fn choose_next(options: NextOptions, counts: &mut [i32; 10]) -> Option<String> {
+        for i in (0..options.upper).rev() {
             if counts[i] > 0 {
                 counts[i] -= 1;
-                if let Some(rest) = choose_minute_10s(counts) {
-                    return Some(format!("{}:{}", i, rest));
+                match options.remaining {
+                    1 => return Some(format!("{}", i)),
+                    _ => {
+                        let init = NextOptions::new(options.remaining - 1, i);
+                        if let Some(next) = choose_next(init, counts) {
+                            return Some(format!("{}{}{}", i, options.spacer, next));
+                        }
+                    }
                 }
                 counts[i] += 1;
-            }
-        }
-        None
-    }
-    
-    fn choose_minute_10s(counts: &mut [i32; 10]) -> Option<String> {
-        for i in (0..6).rev() {
-            if counts[i] > 0 {
-                counts[i] -= 1;
-                if let Some(rest) = choose_minute_1s(counts) {
-                    return Some(format!("{}{}", i, rest));
-                }
-                counts[i] += 1;
-            }
-        }
-        None
-    }
-    
-    fn choose_minute_1s(counts: &mut [i32; 10]) -> Option<String> {
-        for i in (0..10).rev() {
-            if counts[i] > 0 {
-                return Some(format!("{}", i));
             }
         }
         None
