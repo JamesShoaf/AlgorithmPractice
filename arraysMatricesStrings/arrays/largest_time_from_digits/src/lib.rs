@@ -1,10 +1,8 @@
 pub mod time_from_digits {
     pub fn largest_time_from_digits(a: Vec<i32>) -> String {
         let mut counts = [0; 10];
-        for num in a {
-            if num >= 0 && num < 10 {
-                counts[num as usize] += 1;
-            }
+        for num in a.iter().filter(|x| **x >= 0 && **x < 10) {
+            counts[*num as usize] += 1;
         }
         let init = NextOptions::new(4, 0);
         if let Some(time) = choose_next(init, &mut counts) {
@@ -14,14 +12,14 @@ pub mod time_from_digits {
     }
 
     struct NextOptions {
-        upper: usize,
+        max_val: usize,
         spacer: String,
         remaining: usize,
     }
 
     impl NextOptions {
         fn new(remaining: usize, last: usize) -> NextOptions {
-            let upper = match remaining {
+            let max_val = match remaining {
                 4 => 3,
                 3 => {
                     if last == 2 { 4 } else { 10 }
@@ -31,7 +29,7 @@ pub mod time_from_digits {
             };
             let spacer = if remaining == 3 { String::from(":") } else { String::from("") };
             NextOptions {
-                upper,
+                max_val,
                 spacer,
                 remaining,
             }
@@ -39,17 +37,13 @@ pub mod time_from_digits {
     }
 
     fn choose_next(options: NextOptions, counts: &mut [i32; 10]) -> Option<String> {
-        for i in (0..options.upper).rev() {
+        if options.remaining == 0 { return Some(String::from("")); }
+        for i in (0..options.max_val).rev() {
             if counts[i] > 0 {
                 counts[i] -= 1;
-                match options.remaining {
-                    1 => return Some(format!("{}", i)),
-                    _ => {
-                        let init = NextOptions::new(options.remaining - 1, i);
-                        if let Some(next) = choose_next(init, counts) {
-                            return Some(format!("{}{}{}", i, options.spacer, next));
-                        }
-                    }
+                let init = NextOptions::new(options.remaining - 1, i);
+                if let Some(next) = choose_next(init, counts) {
+                    return Some(format!("{}{}{}", i, options.spacer, next));
                 }
                 counts[i] += 1;
             }
