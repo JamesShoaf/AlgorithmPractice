@@ -21,13 +21,13 @@ pub mod time_from_digits {
         fn new(remaining: usize, last: usize) -> NextOptions {
             let mut spacer = String::from("");
             let max_val = match remaining {
-                4 => 3,
+                4 => 2,
                 3 => {
                     spacer += ":";
-                    if last == 2 { 4 } else { 10 }
+                    if last == 2 { 3 } else { 9 }
                 }
-                2 => 6,
-                _ => 10,
+                2 => 5,
+                _ => 9,
             };
             NextOptions {
                 max_val,
@@ -39,11 +39,11 @@ pub mod time_from_digits {
 
     fn choose_next(options: NextOptions, counts: &mut [i32; 10]) -> Option<String> {
         if options.remaining == 0 { return Some(String::from("")); }
-        for i in (0..options.max_val).rev() {
+        for i in (0..=options.max_val).rev() {
             if counts[i] > 0 {
                 counts[i] -= 1;
                 let init = NextOptions::new(options.remaining - 1, i);
-                if let Some(next) = choose_next(init, counts) {
+                if let Some(next) = choose_next(init, counts) {   
                     return Some(format!("{}{}{}", i, options.spacer, next));
                 }
                 counts[i] += 1;
