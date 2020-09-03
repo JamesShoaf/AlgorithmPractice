@@ -1,25 +1,10 @@
 fn repeated_substring_pattern(s: String) -> bool {
-    let chars: Vec<char> = s.chars().collect();
-    for length in 1..=s.len() / 2 {
-        if s.len() % length == 0 {
-            let mut length_matches = true;
-            for repeat in 1..s.len() / length {
-                let mut pattern_matches = true;
-                for index in 0..length {
-                    if chars[index] != chars[repeat * length + index] {
-                        pattern_matches = false;
-                        break;
-                    }
-                }
-                if !pattern_matches {
-                    length_matches = false;
-                    break;
-                }
-            }
-            if length_matches { return true; }
-        }
-    }
-    false
+    let s = s.as_bytes();
+    (1..=s.len()/2).filter(|&x| s.len() % x == 0).any(|x| -> bool {
+        let mut chunks = s.chunks_exact(x);
+        let first = chunks.next().unwrap();
+        chunks.all(|x| x == first)
+    })
 }
 
 
