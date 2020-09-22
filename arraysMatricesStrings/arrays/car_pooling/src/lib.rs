@@ -12,19 +12,19 @@ trips.
 */
 
 use std::collections::BinaryHeap;
+use std::cmp::Reverse;
 
 pub fn car_pooling(trips: Vec<Vec<i32>>, capacity: i32) -> bool {
     let mut current_riders = 0;
     // (stop mile marker, embarking/disembarking count)
-    let mut heap: BinaryHeap<(i32, i32)> = BinaryHeap::new();
+    let mut heap = BinaryHeap::new();
     for trip in trips {
-        // since heap produces a MaxHeap, swap signs to make it a MinHeap
-        heap.push((-trip[1], -trip[0]));
-        heap.push((-trip[2], trip[0]));
+        heap.push(Reverse((trip[1], trip[0])));
+        heap.push(Reverse((trip[2], -trip[0])));
     }
-    while let Some((_, passengers)) = heap.pop() {
-        current_riders += passengers;
-        if current_riders < -capacity {
+    while let Some(passengers) = heap.pop() {
+        current_riders += (passengers.0).1;
+        if current_riders > capacity {
             return false;
         }
     }
