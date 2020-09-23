@@ -7,33 +7,32 @@ Note: The algorithm should run in linear time and in O(1) space. */
 // It finds the first and second most frequent elements by treating them as a combined majority element
 // then confirms that the two elements do meet the criteria of count > floor(n/3)
 
-fn confirm_majority(candidate: Option<i32>, nums: &Vec<i32>, output: &mut Vec<i32>) {
-    if let Some(inner) = candidate {
-        if nums.iter().fold(0, |count, &num| {
-                if num == inner { count + 1 }
-                else { count }
-            }) > nums.len() / 3 {
-            output.push(inner);
-        }
+fn confirm_majority(candidate: i32, nums: &Vec<i32>, output: &mut Vec<i32>) {
+    if nums.iter().fold(0, |count, &num| {
+            if num == candidate { count + 1 }
+            else { count }
+        }) > nums.len() / 3 {
+        output.push(candidate);
     }
 }
 
 pub fn majority_element_ii(nums: Vec<i32>) -> Vec<i32> {
     let mut output = Vec::new();
-    let mut candidate1 = None;
+    let mut candidate1 = 0;
     let mut count1 = 0;
-    let mut candidate2 = None;
+    // the choice of initial values for the candidates is arbitrary, but they need to be distinct
+    let mut candidate2 = 1;
     let mut count2 = 0;
     for &num in nums.iter() {
-        if candidate1 == Some(num) {
+        if candidate1 == num {
             count1 += 1;
-        } else if candidate2 == Some(num)  {
+        } else if candidate2 == num  {
             count2 += 1;
         } else if count1 == 0 {
-            candidate1 = Some(num);
+            candidate1 = num;
             count1 = 1;
         } else if count2 == 0 {
-            candidate2 = Some(num);
+            candidate2 = num;
             count2 = 1;
         } else {
             count1 -= 1;
@@ -42,6 +41,7 @@ pub fn majority_element_ii(nums: Vec<i32>) -> Vec<i32> {
     }
     confirm_majority(candidate1, &nums, &mut output);
     confirm_majority(candidate2, &nums, &mut output);
+    output.sort();
     output
 }
 
