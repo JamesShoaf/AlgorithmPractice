@@ -1,11 +1,14 @@
 use std::rc::Rc;
 use std::cell::RefCell;
 
+// alias length type
+type Tree = Option<Rc<RefCell<TreeNode>>>;
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
   pub val: i32,
-  pub left: Option<Rc<RefCell<TreeNode>>>,
-  pub right: Option<Rc<RefCell<TreeNode>>>,
+  pub left: Tree,
+  pub right: Tree,
 }
 
 impl TreeNode {
@@ -19,23 +22,25 @@ impl TreeNode {
   }
 }
 
-fn helper(node: &mut Option<Rc<RefCell<TreeNode>>>, val: i32) {
-    if node.is_none() {
-        node.replace(Rc::new(RefCell::new(TreeNode::new(val))));
-    }
-    if let Some(rc) = node {
+fn insert(tree: &mut Tree, val: i32) {
+    // get a mutable reference to the current TreeNode
+    if let Some(rc) = tree {
         let mut ref_mut = rc.borrow_mut();
+        // then recurse on the right or left branch until an empty leaf is found
         if val > ref_mut.val {
-            helper(&mut ref_mut.right, val);
+            insert(&mut ref_mut.right, val);
         }
         if val < ref_mut.val {
-            helper(&mut ref_mut.left, val);
+            insert(&mut ref_mut.left, val);
         }
+    // if the existing tree is empty or when insert recurses to an empty leaf, insert the value
+    } else {
+        tree.replace(Rc::new(RefCell::new(TreeNode::new(val))));
     }
 }
 
-pub fn insert(mut root: Option<Rc<RefCell<TreeNode>>>, val: i32) -> Option<Rc<RefCell<TreeNode>>> {
-    helper(&mut root, val);
+pub fn owned_insert(mut root: Tree, val: i32) -> Tree {
+    insert(&mut root, val);
     root
 }
 
@@ -56,7 +61,7 @@ mod tests {
         r.right = Some(Rc::new(RefCell::new(rr)));
         root.right = Some(Rc::new(RefCell::new(r)));
 
-        println!("{:?}", insert(Some(Rc::new(RefCell::new(root))), 6));
+        println!("{:?}", owned_insert(Some(Rc::new(RefCell::new(root))), 6));
         panic!();
     }
 }
