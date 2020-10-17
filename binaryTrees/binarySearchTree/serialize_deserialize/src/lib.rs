@@ -1,13 +1,14 @@
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::VecDeque;
-// use std::iter::FromIterator;
+
+type Tree = Option<Rc<RefCell<TreeNode>>>;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
   pub val: i32,
-  pub left: Option<Rc<RefCell<TreeNode>>>,
-  pub right: Option<Rc<RefCell<TreeNode>>>,
+  pub left: Tree,
+  pub right: Tree,
 }
 
 impl TreeNode {
@@ -21,7 +22,7 @@ impl TreeNode {
   }
 }
 
-pub fn is_equal(node1: &Option<Rc<RefCell<TreeNode>>>, node2: &Option<Rc<RefCell<TreeNode>>>) -> bool {
+pub fn is_equal(node1: &Tree, node2: &Tree) -> bool {
     if node1.is_none() && node2.is_none() { return true; }
     if node1.is_none() || node2.is_none() { return false; }
     let inner1 = node1.as_ref().unwrap().borrow();
@@ -30,14 +31,14 @@ pub fn is_equal(node1: &Option<Rc<RefCell<TreeNode>>>, node2: &Option<Rc<RefCell
     is_equal(&inner1.left, &inner2.left) && is_equal(&inner1.right, &inner2.right)
 }
 
-fn clone_contents(node: &Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+fn clone_contents(node: &Tree) -> Tree {
     if let Some(inner) = node.as_ref() {
         return Some(inner.clone());
     }
     None
 }
 
-fn push_char(queue: &mut VecDeque<Option<Rc<RefCell<TreeNode>>>>, output: &mut String) {
+fn push_char(queue: &mut VecDeque<Tree>, output: &mut String) {
     let current = queue.pop_front().unwrap();
     if let Some(inner) = current {
         let inner = inner.borrow();
@@ -49,7 +50,7 @@ fn push_char(queue: &mut VecDeque<Option<Rc<RefCell<TreeNode>>>>, output: &mut S
     }
 }
 
-pub fn serialize(root: &Option<Rc<RefCell<TreeNode>>>) -> String {
+pub fn serialize(root: &Tree) -> String {
     if root.is_none() { return String::new(); }
     let mut output = String::new();
     let mut queue = VecDeque::from(vec![Some(root.as_ref().unwrap().clone())]);
@@ -62,7 +63,7 @@ pub fn serialize(root: &Option<Rc<RefCell<TreeNode>>>) -> String {
 }
 
 fn add_node(
-    node: &mut Option<Rc<RefCell<TreeNode>>>,
+    node: &mut Tree,
     nodes: &mut std::str::Split<char>,
     queue: &mut VecDeque<Rc<RefCell<TreeNode>>>,
 ) {
@@ -75,7 +76,7 @@ fn add_node(
     }
 }
 
-pub fn deserialize(s: String) -> Option<Rc<RefCell<TreeNode>>> {
+pub fn deserialize(s: String) -> Tree {
     if s.len() == 0 { return None; }
     let mut nodes = s.split(',');
     let root = Rc::new(RefCell::new(TreeNode::new(nodes.next().unwrap().parse().unwrap())));
@@ -92,7 +93,7 @@ pub fn deserialize(s: String) -> Option<Rc<RefCell<TreeNode>>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    fn setup_test_trees() -> Vec<Option<Rc<RefCell<TreeNode>>>> {
+    fn setup_test_trees() -> Vec<Tree> {
         let mut test_trees = Vec::new();
 
         test_trees.push(None);
