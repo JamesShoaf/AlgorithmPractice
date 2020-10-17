@@ -17,25 +17,24 @@ Given a VPS represented as string s, return the nesting depth of s.
 */
 
 pub fn max_depth(s:String) -> i32 {
-    let mut max = 0;
-    let mut current = 0;
-    for c in s.chars() {
-        match c {
-            '(' => current += 1,
-            ')' => current -= 1,
-            _ => (),
-        }
-        if current > max {
-            max = current;
-        }
-    }
-    max
+    s.chars().fold((0, 0), |(max, curr), x| match x {
+        '(' => (if curr == max { max + 1 } else { max }, curr + 1),
+        ')' => (max, curr - 1),
+        _ => (max, curr)}
+    ).0
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let test_tuples = vec![
+            (String::from(""), 0),
+            (String::from("(1+(2*3)+((8))/4))+1"), 3),
+        ];
+        for (s, expected) in test_tuples {
+            assert_eq!(max_depth(s), expected);
+        }
     }
 }
