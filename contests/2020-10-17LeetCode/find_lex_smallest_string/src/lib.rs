@@ -16,37 +16,15 @@ corresponding letter in b. For example, "0158" is lexicographically smaller than
 the first position they differ is at the third letter, and '5' comes before '9'.
 */
 
-/* 
-There are a few cases to handle for this problem
-if a is 0, no changes can be made to any number. Rotation only.
-if a is 1, 3, 7, or 9, any number at an odd index can be changed to any other number.
-if a is 2, 4, 6, or 8, any number at an odd index be changed to any number of the same parity
-if a is 5, any number at an odd index can be changed only to a number 5 away.
+use std::collections::{ HashSet, VecDeque };
 
-if b is 0, no rotations can be made.
-if b is odd, any rotation can be made.
-if b is even and nonzero, any rotation to an even index can be made (s is of even length), unless
-s's length is evenly divisible by b
-*/
-
-/* 
-    2 <= s.length <= 100
-    s.length is even.
-    s consists of digits from 0 to 9 only.
-    1 <= a <= 9
-    1 <= b <= s.length - 1
-*/
-// given the tiny string length, a brute force solution seems feasible here
-
-// 
-use std::collections::{ HashSet, HashMap };
-
-fn permute_rotations(mut num: String, b: i32, set: &mut HashSet<String>) {
+fn permute_rotations(num: &String, b: i32, visited: &mut HashSet<String>, queue: &mut VecDeque<String>) {
     let mut temp = num.clone();
     let mut cycle = num.chars().cycle();
     let offset = b as usize % num.len();
-    while !set.contains(&temp) {
-        set.insert(temp.clone());
+    while !visited.contains(&temp) {
+        visited.insert(temp.clone());
+        queue.push_back(temp.clone());
         for _ in 0..offset {
             cycle.next();
         }
@@ -57,39 +35,50 @@ fn permute_rotations(mut num: String, b: i32, set: &mut HashSet<String>) {
         temp = vec.iter().collect();
     }
 }
-fn permute_increments(a: i32, rotated_nums: HashSet<String>) -> HashSet<String> {
-    let mut increment: HashMap<char, char> = HashMap::new();
-    for i in 0..10 {
-        increment.insert(i as char, ((i + a as u8) % 10) as char);
+
+fn increment_word(s: String, a: i32, visited: &HashSet<String>, queue: &mut VecDeque<String>) {
+    if a == 0 { return; }
+    let mut chars: Vec<char> = s.chars().collect();
+    for i in (1..chars.len()).step_by(2) {
+        chars[i] = std::char::from_digit(
+            (chars[i].to_digit(10).unwrap() + a as u32) % 10, 10)
+            .unwrap();
     }
-    let increment_limit = if a % 5 == 0 { 2 }
-        else if a % 2 == 0 { 5 }
-        else { 10 };
-    rotated_nums.into_iter().fold(HashSet::new(), |mut acc, mut num| {
-        for _ in 0..increment_limit {
-            acc.insert(num.clone());
-            num = num.chars().fold(String::new(), |mut acc, c| {
-                acc.push(*increment.get(&c).unwrap());
-                acc
-            });
-        }
-        acc
-    })
+    let string = chars.into_iter().collect();
+    if !visited.contains(&string) {
+        queue.push_back(string);
+    }
 }
 
-fn find_lex_smallest_string(s:String, a: i32, b: i32) -> String {
-    let mut rotated_nums: HashSet<String> = HashSet::new();
-    permute_rotations(s, b, &mut rotated_nums);
-    let incremented_nums = permute_increments(a, rotated_nums);
-    let mut incremented_nums: Vec<String> = incremented_nums.into_iter().collect();
-    incremented_nums.sort();
-    incremented_nums[0].clone()
+pub fn find_lex_smallest_string(s:String, a: i32, b: i32) -> String {
+    let mut visited: HashSet<String> = HashSet::new();
+    let mut queue: VecDeque<String> = VecDeque::new();
+    permute_rotations(&s, b, &mut visited, &mut queue);
+    while !queue.is_empty() {
+        let next = queue.pop_front().unwrap();
+        if !visited.contains(&next) {
+            permute_rotations(&next, b, &mut visited, &mut queue);
+        }
+        increment_word(next, a, &visited, &mut queue);
+    }
+    let mut permutations: Vec<String> = visited.into_iter().collect();
+    permutations.sort();
+    permutations[0].clone()
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let test_tuples = vec![
+            (String::from("5525"), 9, 2, String::from("2050")),
+            (String::from("74"), 5, 1, String::from("24")),
+            (String::from("0011"), 4, 2, String::from("0011")),
+            (String::from("43987654"), 7, 3, String::from("00553311")),
+        ];
+        for (s, a, b, expected) in test_tuples {
+            assert_eq!(find_lex_smallest_string(s, a, b), expected);
+        }
     }
 }
