@@ -37,7 +37,7 @@ fn gcd(a: usize, b: usize) -> usize {
         if b & 1 == 0 { return gcd(a >> 1, b >> 1) << 1; }
         return gcd(a >> 1, b);
     }
-    if a & 1 == 0 { return gcd(a, b >> 1); }
+    if b & 1 == 0 { return gcd(a, b >> 1); }
     gcd(a - b, b)
 }
 
