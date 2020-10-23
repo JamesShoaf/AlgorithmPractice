@@ -10,7 +10,7 @@ pub fn find_poisoned_duration(time_series: Vec<i32>, duration: i32) -> i32 {
         let time_poisoned = std::cmp::min(time + duration - *end_poison, duration);
         *end_poison = time + duration;
         Some(time_poisoned)
-    }).fold(0, |acc, val| acc + val)
+    }).sum()
 }
 
 #[cfg(test)]

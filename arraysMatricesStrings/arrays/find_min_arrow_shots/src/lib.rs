@@ -38,7 +38,7 @@ pub fn find_min_arrow_shots(mut points: Vec<Vec<i32>>) -> i32 {
             *end = cmp::min(*end, *closest_ends.get(&x[0]).unwrap());
             Some(0)
         }
-    }).fold(1, |acc, val| acc + val)
+    }).sum::<i32>() + 1
 }
 
 /* 

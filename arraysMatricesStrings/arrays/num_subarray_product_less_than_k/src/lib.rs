@@ -18,7 +18,7 @@ pub fn num_subarray_product_less_than_k(nums: Vec<i32>, k: i32) -> i32 {
             *i += 1;
         }
         Some(if *i <= j { 1 + j - *i } else { 0 })
-    }).fold(0, |acc, val| acc + val) as i32
+    }).sum::<usize>() as i32
 }
 
 #[cfg(test)]
