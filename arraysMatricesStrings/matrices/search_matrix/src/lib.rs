@@ -16,10 +16,8 @@ pub fn search_matrix(matrix: &Vec<Vec<i32>>, val: i32) -> bool {
         match val.cmp(&matrix[mid][0]) {
             Ordering::Less => high = mid,
             Ordering::Equal => return true,
-            Ordering::Greater => {
-                if low == mid { break; }
-                low = mid;
-            }
+            Ordering::Greater if low == mid => break,
+            _ => low = mid,
         }
     }
     let row = low;
@@ -28,12 +26,10 @@ pub fn search_matrix(matrix: &Vec<Vec<i32>>, val: i32) -> bool {
     while low <= high {
         let mid = (low + high) / 2;
         match val.cmp(&matrix[row][mid]) {
-            Ordering::Less => {
-                if mid == 0 { return false; }
-                high = mid - 1;
-            }
             Ordering::Equal => return true,
             Ordering::Greater => low = mid + 1,
+            Ordering::Less if mid == 0 => return false,
+            _ => high = mid - 1,
         }
     }
     false

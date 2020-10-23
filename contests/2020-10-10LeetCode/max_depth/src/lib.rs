@@ -18,7 +18,8 @@ Given a VPS represented as string s, return the nesting depth of s.
 
 pub fn max_depth(s:String) -> i32 {
     s.chars().fold((0, 0), |(max, curr), x| match x {
-        '(' => (if curr == max { max + 1 } else { max }, curr + 1),
+        '(' if curr == max => (max + 1, curr + 1),
+        '(' => (max, curr + 1),
         ')' => (max, curr - 1),
         _ => (max, curr)}
     ).0

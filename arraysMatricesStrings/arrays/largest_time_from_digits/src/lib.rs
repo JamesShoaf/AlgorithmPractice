@@ -1,9 +1,10 @@
 pub mod time_from_digits {
     pub fn largest_time_from_digits(a: Vec<i32>) -> String {
         let mut counts = [0; 10];
-        for num in a.iter().filter(|x| **x >= 0 && **x < 10) {
-            counts[*num as usize] += 1;
+        for &num in a.iter().filter(|&&x| x >= 0 && x < 10) {
+            counts[num as usize] += 1;
         }
+        // times contain 4 digits, and 0 as the imaginary previous digit is arbitrary
         let init = NextOptions::new(4, 0);
         if let Some(time) = choose_next(init, &mut counts) {
             return time;
@@ -19,14 +20,14 @@ pub mod time_from_digits {
 
     impl NextOptions {
         fn new(remaining: usize, last: usize) -> NextOptions {
-            let mut spacer = String::from("");
+            let spacer = String::from(
+                if remaining == 3 { ":" }
+                else { "" }
+            );
             let max_val = match remaining {
-                4 => 2,
-                3 => {
-                    spacer += ":";
-                    if last == 2 { 3 } else { 9 }
-                }
                 2 => 5,
+                3 if last == 2 => 3,
+                4 => 2,
                 _ => 9,
             };
             NextOptions {
@@ -39,14 +40,14 @@ pub mod time_from_digits {
 
     fn choose_next(options: NextOptions, counts: &mut [i32; 10]) -> Option<String> {
         if options.remaining == 0 { return Some(String::from("")); }
-        for i in (0..=options.max_val).rev() {
-            if counts[i] > 0 {
-                counts[i] -= 1;
-                let init = NextOptions::new(options.remaining - 1, i);
+        for digit in (0..=options.max_val).rev() {
+            if counts[digit] > 0 {
+                counts[digit] -= 1;
+                let init = NextOptions::new(options.remaining - 1, digit);
                 if let Some(next) = choose_next(init, counts) {   
-                    return Some(format!("{}{}{}", i, options.spacer, next));
+                    return Some(format!("{}{}{}", digit, options.spacer, next));
                 }
-                counts[i] += 1;
+                counts[digit] += 1;
             }
         }
         None

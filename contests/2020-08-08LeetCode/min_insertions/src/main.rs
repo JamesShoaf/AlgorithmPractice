@@ -27,24 +27,19 @@ impl Solution {
                         counter += ((unmatched_closed + 1) / 2) + (unmatched_closed % 2);
                         unmatched_closed = 0;
                     }
-                    // and for unfinished pairs
+                    // and for unfinished trios
                     if matched_pair {
                         counter += 1;
                         matched_pair = false;
                     }
                     unmatched_open += 1;
                 }
-                ')' => {
-                    if matched_pair {
-                        matched_pair = false;
-                    } else if unmatched_open > 0 {
-                        unmatched_open -= 1;
-                        matched_pair = true;
-                    } else {
-                        unmatched_closed += 1;
-                    }
+                ')' if matched_pair => matched_pair = false,
+                ')' if unmatched_open > 0 => {
+                    unmatched_open -= 1;
+                    matched_pair = true;
                 }
-                _ => (),
+                _ => unmatched_closed += 1,
             }
         }
         if unmatched_closed > 0 { counter += ((unmatched_closed + 1) / 2) + (unmatched_closed % 2); }
