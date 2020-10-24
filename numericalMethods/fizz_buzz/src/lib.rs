@@ -1,4 +1,4 @@
-fn fizz_buzz(n: i32) -> Vec<String> {
+pub fn fizz_buzz(n: i32) -> Vec<String> {
     let mut output: Vec<String> = Vec::new();
     for i in 1..=n {
         let mut string = String::new();
@@ -10,27 +10,26 @@ fn fizz_buzz(n: i32) -> Vec<String> {
     output
 }
 
-
-
-fn lambda_buzz(n: i32) -> String {
-    fn fizz(n: i32) -> Box<dyn Fn(i32) -> String> {
-        if n % 3 == 0 {
-            Box::new(|x| {
-                if x % 5 == 0 {
-                    String::from("FizzBuzz")
-                } else { String::from("Fizz") }
-            })
+fn buzz (buzz: String, blank: String) -> Box<dyn Fn(i32) -> String> {
+    Box::new(move |x| {
+        if x % 5 == 0 {
+            buzz.clone()
         } else {
-            Box::new(|x| {
-                if x % 5 == 0 {
-                    String::from("Buzz")
-                } else {
-                    format!("{}", x)
-                }
-            })
+            blank.clone()
         }
+    })
+}
+
+fn fizz(n: i32) -> String {
+    if n % 3 == 0 {
+        buzz(String::from("FizzBuzz"), String::from("Fizz"))(n)
+    } else {
+        buzz(String::from("Buzz"), format!("{}", n))(n)
     }
-    fizz(n)(n)
+}
+
+pub fn lambda_buzz(n: i32) -> String {
+    fizz(n)
 }
 
 #[cfg(test)]
