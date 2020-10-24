@@ -10,6 +10,29 @@ fn fizz_buzz(n: i32) -> Vec<String> {
     output
 }
 
+
+
+fn lambda_buzz(n: i32) -> String {
+    fn fizz(n: i32) -> Box<dyn Fn(i32) -> String> {
+        if n % 3 == 0 {
+            Box::new(|x| {
+                if x % 5 == 0 {
+                    String::from("FizzBuzz")
+                } else { String::from("Fizz") }
+            })
+        } else {
+            Box::new(|x| {
+                if x % 5 == 0 {
+                    String::from("Buzz")
+                } else {
+                    format!("{}", x)
+                }
+            })
+        }
+    }
+    fizz(n)(n)
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
