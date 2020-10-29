@@ -13,7 +13,7 @@ Return that maximum distance to the closest person.
 use std::cmp;
 
 pub fn max_dist_to_closest(seats:Vec<i32>) -> i32 {
-    if seats.len() == 0 || !seats.contains(&1) {
+    if seats.is_empty() || !seats.contains(&1) {
         return seats.len() as i32;
     }
     let first_seated = seats.iter().position(|&x| x == 1).unwrap();
