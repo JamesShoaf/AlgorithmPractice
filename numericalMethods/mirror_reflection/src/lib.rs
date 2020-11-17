@@ -10,6 +10,7 @@ Return the number of the receptor that the ray meets first.  (It is guaranteed t
     meet a receptor eventually.)
 */
 
+//simulation approach
 pub fn mirror_reflection(p: i32, q: i32) -> i32 {
     assert!(p >= 1 && p <= 1000);
     assert!(q >= 0 && q <= p);
@@ -38,6 +39,49 @@ pub fn mirror_reflection(p: i32, q: i32) -> i32 {
     }
 }
 
+// Stein's Binary GCD algorithm
+fn gcd(a: i32, b: i32) -> i32 {
+    if b > a {
+        return gcd(b, a);
+    }
+    if a == b {
+        return a;
+    }
+    if b == 0 {
+        return a;
+    }
+    if a & 1 == 0 {
+        if b & 1 == 0 {
+            return gcd(a >> 1, b >> 1) << 1;
+        }
+        return gcd(a >> 1, b);
+    }
+    if b & 1 == 0 {
+        return gcd(a, b >> 1);
+    }
+    gcd(a - b, b)
+}
+
+// The ray of light can be modelled as a vector (p, q). A receptor at height n*p will be hit by
+// a ray bouncing k times at (kp, kq). k = p / gcd(p, q)
+pub fn mirror_reflection_mathematical(mut p: i32, mut q: i32) -> i32 {
+    let gcd = gcd(p, q);
+    p /= gcd;
+    p %= 2;
+    q /= gcd;
+    q %= 2;
+    // odd remainder indicates an even number of horizontal reflections (p) and vertical reflections(q)
+    if p == 1 && q == 1 {
+        return 1;
+    }
+    // even number of horizontal reflections, odd number of vertical reflections
+    if p == 1 {
+        return 0;
+    }
+    // odd number of horizontal and vertical reflections
+    2
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -54,6 +98,21 @@ mod tests {
         ];
         for (p, q, expected) in test_tuples {
             assert_eq!(mirror_reflection(p, q), expected);
+        }
+    }
+    #[test]
+    fn test_mirror_reflections_mathematical() {
+        let test_tuples = vec![
+            (6, 0, 0),
+            (6, 1, 2),
+            (6, 2, 1),
+            (6, 3, 2),
+            (6, 4, 0),
+            (6, 5, 2),
+            (6, 6, 1),
+        ];
+        for (p, q, expected) in test_tuples {
+            assert_eq!(mirror_reflection_mathematical(p, q), expected);
         }
     }
 }
