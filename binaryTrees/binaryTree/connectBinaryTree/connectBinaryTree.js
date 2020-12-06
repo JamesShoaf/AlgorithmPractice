@@ -18,17 +18,17 @@ next pointer should be set to NULL.
 Initially, all next pointers are set to NULL.
 */
 
-const connectAcross = (left, right) => {
+const perfectConnectAcross = (left, right) => {
   if (left === null || right === null) return;
   left.next = right;
-  connectAcross(left.right, right.left);
+  perfectConnectAcross(left.right, right.left);
 };
 
-const connect = (root) => {
+const perfectConnect = (root) => {
   if (root === null) return root;
-  connectAcross(root.left, root.right);
-  connect(root.left);
-  connect(root.right);
+  perfectConnectAcross(root.left, root.right);
+  perfectConnect(root.left);
+  perfectConnect(root.right);
   return root;
 };
 
@@ -67,4 +67,56 @@ var connect = function(root) {
 };
 */
 
-module.exports = { connect };
+/*
+If the tree is imperfect, the algorithm needs to incorporate a few additional checks
+*/
+// initial Level-order traversal (O(n) time, O(n) space)
+// const connect = (root) => {
+//   if (!root) return root;
+//   let level = [root];
+//   while (level.length > 0) {
+//     const nextLevel = [];
+//     for (let i = 0; i < level.length; i += 1) {
+//       const node = level[i];
+//       if (level[i + 1]) node.next = level[i] + 1;
+//       if (node.left) nextLevel.push(node.left);
+//       if (node.right) nextLevel.push(node.right);
+//     }
+//     level = nextLevel;
+//   }
+//   return root;
+// };
+
+// Pointer based refactor of Level-order traversal (O(n) time, O(1) space)
+
+// travels right until it finds a node with a child, then returns a reference to that node's
+// leftmost child
+const leftmostNext = (node) => {
+  let next = node;
+  while (next) {
+    if (next.left) return next.left;
+    if (next.right) return next.right;
+    next = next.next;
+  }
+  return next;
+};
+
+const connect = (root) => {
+  // leftmost node of current level
+  let leftmost = root;
+  while (leftmost) {
+    let curr = leftmost;
+    while (curr) {
+      // connect current node's children to next node to their right
+      if (curr.left) curr.left.next = curr.right || leftmostNext(curr.next);
+      if (curr.right) curr.right.next = leftmostNext(curr.next);
+      // move current pointer right
+      curr = curr.next;
+    }
+    // move leftmost pointer to leftmost of next level
+    leftmost = leftmostNext(leftmost);
+  }
+  return root;
+};
+
+module.exports = { perfectConnect, connect };
