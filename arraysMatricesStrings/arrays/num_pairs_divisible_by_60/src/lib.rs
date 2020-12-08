@@ -16,6 +16,21 @@ pub fn num_pairs_divisible_by_60(time: Vec<i32>) -> i32 {
     res
 }
 
+pub fn num_pairs_divisible_by_n(nums: Vec<i32>, n: usize) -> usize {
+    assert!(n != 0, "Cannot divide by zero");
+    if n == 1 && !nums.is_empty() {
+        return nums.len() * 2 - 1;
+    }
+    let mut counts = vec![0; n];
+    let mut res = 0;
+    for num in nums {
+        let num = num as usize % n;
+        res += counts[(n - num) % n];
+        counts[num] += 1;
+    }
+    res
+}
+
 #[cfg(test)]
 mod tests {
     use super::num_pairs_divisible_by_60;
