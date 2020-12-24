@@ -1,6 +1,7 @@
 node_modules
 Cargo.lock
 .vscode
+**/input.txt
 
 # Generated files
 coverage
