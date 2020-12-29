@@ -39,7 +39,12 @@ fn first_invalid_number(nums: &Vec<u64>) -> Option<u64> {
             return Some(nums[i]);
         }
         *counts.entry(nums[i]).or_insert(0) += 1;
-        *counts.get_mut(&nums[i - PREAMBLE_LENGTH]).unwrap() -= 1;
+        let first_count = counts.get_mut(&nums[i - PREAMBLE_LENGTH]).unwrap();
+        if *first_count > 1 {
+            *first_count -= 1;
+        } else {
+            counts.remove(&nums[i - PREAMBLE_LENGTH]);
+        }
     }
     None
 }
