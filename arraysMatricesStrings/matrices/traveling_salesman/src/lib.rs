@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use std::cmp;
+use std::collections::HashSet;
 
 type Matrix = Vec<Vec<Option<i32>>>;
 
@@ -10,14 +10,24 @@ fn setup(adj_mat: &Matrix, start: usize, memo: &mut Matrix) {
 }
 
 // generates all numbers up to 2^n - 1 with r set bits
-fn recursive_combinations(output: &mut Vec<usize>, dead_ends: &mut HashSet<(usize, usize)>,
-    curr: usize, r: usize, i: usize, n: usize) -> bool {
-    if dead_ends.contains(&(r, i)) { return false; }
+fn recursive_combinations(
+    output: &mut Vec<usize>,
+    dead_ends: &mut HashSet<(usize, usize)>,
+    curr: usize,
+    r: usize,
+    i: usize,
+    n: usize,
+) -> bool {
+    if dead_ends.contains(&(r, i)) {
+        return false;
+    }
     if r == 0 {
         output.push(curr);
         return true;
     }
-    if i == n { return false; }
+    if i == n {
+        return false;
+    }
     if !recursive_combinations(output, dead_ends, curr | 1 << i, r - 1, i + 1, n) {
         dead_ends.insert((r, i));
         return false;
@@ -40,7 +50,9 @@ fn in_subset(i: usize, subset: usize) -> bool {
 fn solve(n: usize, start: usize, memo: &mut Matrix) {
     for r in 3..=n {
         for subset in combinations(r, n) {
-            if !in_subset(start, subset) { continue; }
+            if !in_subset(start, subset) {
+                continue;
+            }
             for next in (0..n).filter(|&i| in_subset(i, subset) && i != start) {
                 let state = subset ^ 1 << next;
                 let mut min_distance = None;
@@ -48,7 +60,8 @@ fn solve(n: usize, start: usize, memo: &mut Matrix) {
                     if let Some(length_to_end) = memo[end][state] {
                         if let Some(end_to_next) = memo[end][next] {
                             if let Some(min_distance) = min_distance.as_mut() {
-                                *min_distance = cmp::min(*min_distance, length_to_end + end_to_next);
+                                *min_distance =
+                                    cmp::min(*min_distance, length_to_end + end_to_next);
                             } else {
                                 min_distance = Some(length_to_end + end_to_next);
                             }
@@ -62,14 +75,18 @@ fn solve(n: usize, start: usize, memo: &mut Matrix) {
 }
 
 fn completed_tour(n: usize) -> usize {
-    if n == 32 { usize::MAX }
-    else { 2_usize.pow(n as u32) - 1 }
+    if n == 32 {
+        usize::MAX
+    } else {
+        2_usize.pow(n as u32) - 1
+    }
 }
 
 fn find_min_cost(adj_mat: &Matrix, start: usize, memo: &Matrix) -> Option<i32> {
     let n = adj_mat.len();
     let end_state = completed_tour(n);
-    (0..n).filter(|&i| i != start)
+    (0..n)
+        .filter(|&i| i != start)
         .filter(|&i| memo[i][end_state].is_some())
         .filter(|&i| adj_mat[i][start].is_some())
         .map(|i| *memo[i][end_state].as_ref().unwrap() + *adj_mat[i][start].as_ref().unwrap())
@@ -83,16 +100,23 @@ fn find_optimal_tour(adj_mat: &Matrix, start: usize, memo: &Matrix) -> Option<Ve
     let mut tour = vec![start];
 
     for _ in (1..n).rev() {
-        if let Some((_, index)) = (0..n).filter(|&i| i != start && in_subset(i, state)
-            && memo[i][state].is_some() && adj_mat[i][last_index].is_some())
-            .map(|i| (*memo[i][state].as_ref().unwrap() + *adj_mat[i][last_index].as_ref().unwrap(), i))
-            .min() {
-                tour.push(index);
-                state ^= 1 << index;
-                last_index = index;
-        } else {
-            return None;
-        }
+        let (_, index) = (0..n)
+            .filter(|&i| {
+                i != start
+                    && in_subset(i, state)
+                    && memo[i][state].is_some()
+                    && adj_mat[i][last_index].is_some()
+            })
+            .map(|i| {
+                (
+                    *memo[i][state].as_ref().unwrap() + *adj_mat[i][last_index].as_ref().unwrap(),
+                    i,
+                )
+            })
+            .min()?;
+        tour.push(index);
+        state ^= 1 << index;
+        last_index = index;
     }
     tour.push(start);
     Some(tour)
@@ -101,7 +125,10 @@ fn find_optimal_tour(adj_mat: &Matrix, start: usize, memo: &Matrix) -> Option<Ve
 pub fn traveling_salesman(adj_mat: &Matrix, start: usize) -> Option<(i32, Vec<usize>)> {
     let n = adj_mat.len();
     assert!(n > 0 && n <= 32, "node count must be in range [1, 32]");
-    assert!(adj_mat.iter().all(|row| row.len() == n), "dimension mismatch: matrix must be n x n");
+    assert!(
+        adj_mat.iter().all(|row| row.len() == n),
+        "dimension mismatch: matrix must be n x n"
+    );
     assert!(n > start, "starting node must be in range [0, n)");
     let mut memo: Matrix = vec![vec![None; 2_usize.pow(n as u32)]; n];
     setup(adj_mat, start, &mut memo);
@@ -113,7 +140,6 @@ pub fn traveling_salesman(adj_mat: &Matrix, start: usize) -> Option<(i32, Vec<us
     }
     None
 }
-
 
 #[cfg(test)]
 mod tests {

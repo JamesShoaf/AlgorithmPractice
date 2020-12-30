@@ -18,46 +18,43 @@ Return an array answer of size n where answer[i] is the column that the ball fal
 bottom after dropping the ball from the ith column at the top, or -1 if the ball gets stuck in the box.
 */
 
-enum Direction {
-    Left,
-    Down,
-    Right,
+enum Dir {
+    L,
+    D,
+    R,
 }
 
-fn find_exit_col(
-    direction: Direction,
-    row: usize,
-    col: usize,
-    matrix: &Vec<Vec<i32>>,
-) -> Option<usize> {
+fn find_exit_col(dir: Dir, row: usize, col: usize, matrix: &Vec<Vec<i32>>) -> Option<usize> {
     if row == matrix.len() {
         return Some(col);
     }
     let slant = matrix[row][col];
-    match direction {
-        Direction::Left => {
-            if slant == 1 {
-                return None;
-            }
-            return find_exit_col(Direction::Down, row + 1, col, matrix);
+    match dir {
+        Dir::L => {
+            return Some(()).filter(|_| slant == -1).and(find_exit_col(
+                Dir::D,
+                row + 1,
+                col,
+                matrix,
+            ));
         }
-        Direction::Down => {
+        Dir::D => {
             if slant == 1 {
-                if col + 1 == matrix[row].len() {
-                    return None;
-                }
-                return find_exit_col(Direction::Right, row, col + 1, matrix);
+                return Some(())
+                    .filter(|_| col + 1 < matrix[row].len())
+                    .and(find_exit_col(Dir::R, row, col + 1, matrix));
             }
-            if col == 0 {
-                return None;
-            }
-            return find_exit_col(Direction::Left, row, col - 1, matrix);
+            return Some(())
+                .filter(|_| col > 0)
+                .and(find_exit_col(Dir::L, row, col - 1, matrix));
         }
-        Direction::Right => {
-            if slant == -1 {
-                return None;
-            }
-            return find_exit_col(Direction::Down, row + 1, col, matrix);
+        Dir::R => {
+            return Some(()).filter(|_| slant == 1).and(find_exit_col(
+                Dir::D,
+                row + 1,
+                col,
+                matrix,
+            ));
         }
     }
 }
@@ -68,7 +65,7 @@ pub fn find_ball(matrix: Vec<Vec<i32>>) -> Vec<i32> {
     }
     (0..matrix[0].len())
         .map(|i| {
-            if let Some(col) = find_exit_col(Direction::Down, 0, i, &matrix) {
+            if let Some(col) = find_exit_col(Dir::D, 0, i, &matrix) {
                 return col as i32;
             }
             return -1;

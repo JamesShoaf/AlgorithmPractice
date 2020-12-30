@@ -31,9 +31,7 @@ fn get_joltage_diffs(joltages: &Vec<u64>) -> Option<[usize; 3]> {
     let mut res = [0; 3];
     for i in 1..joltages.len() {
         let diff = joltages[i] - joltages[i - 1];
-        if diff == 0 || diff > 4 {
-            return None;
-        }
+        Some(()).filter(|_| diff > 0 && diff <= 3)?;
         res[(diff - 1) as usize] += 1;
     }
     Some(res)

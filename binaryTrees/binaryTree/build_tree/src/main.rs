@@ -1,5 +1,5 @@
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
@@ -14,19 +14,18 @@ impl TreeNode {
         TreeNode {
             val,
             left: None,
-            right: None
+            right: None,
         }
     }
 }
 
 struct Solution {}
 
-
 // given inorder and postorder traversal of a binary tree, construct the binary tree
 // assume no duplicate values exist in the tree
 impl Solution {
     pub fn build_tree(inorder: Vec<i32>, postorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-        if postorder.len() == 0 { return None; }
+        Some(()).filter(|_| postorder.len() > 0)?;
         let mut inorder_left = inorder.to_vec();
         let mut postorder_left = postorder.to_vec();
         let root_val = postorder_left.pop().unwrap();

@@ -7,9 +7,7 @@ fn get_next_coord(
     last_col: usize,
     ascending: &mut bool,
 ) -> Option<()> {
-    if *row == last_row && *col == last_col {
-        return None;
-    }
+    Some(()).filter(|_| *row == last_row && *col == last_col)?;
     if *ascending {
         if *col == last_col || *row == 0 {
             *ascending = false

@@ -8,14 +8,10 @@ type Tree = Option<Rc<RefCell<TreeNode>>>;
 fn is_branch_balanced(node: &Tree) -> Option<i32> {
     if let Some(inner) = node {
         let inner = inner.borrow();
-        if let Some(left_height) = is_branch_balanced(&inner.left) {
-            if let Some(right_height) = is_branch_balanced(&inner.right) {
-                if (left_height - right_height).abs() <= 1 {
-                    return Some(cmp::max(left_height, right_height) + 1);
-                }
-            }
-        }
-        return None;
+        let left_height = is_branch_balanced(&inner.left)?;
+        let right_height = is_branch_balanced(&inner.right)?;
+        return Some(cmp::max(left_height, right_height) + 1)
+            .filter(|_| (left_height - right_height).abs() <= 1);
     }
     Some(0)
 }

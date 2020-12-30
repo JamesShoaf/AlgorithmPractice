@@ -1,33 +1,39 @@
-use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::VecDeque;
+use std::rc::Rc;
 
 type Tree = Option<Rc<RefCell<TreeNode>>>;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
-  pub val: i32,
-  pub left: Tree,
-  pub right: Tree,
+    pub val: i32,
+    pub left: Tree,
+    pub right: Tree,
 }
 
 impl TreeNode {
-  #[inline]
-  pub fn new(val: i32) -> Self {
-    TreeNode {
-      val,
-      left: None,
-      right: None
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
     }
-  }
 }
 
 pub fn is_equal(node1: &Tree, node2: &Tree) -> bool {
-    if node1.is_none() && node2.is_none() { return true; }
-    if node1.is_none() || node2.is_none() { return false; }
+    if node1.is_none() && node2.is_none() {
+        return true;
+    }
+    if node1.is_none() || node2.is_none() {
+        return false;
+    }
     let inner1 = node1.as_ref().unwrap().borrow();
     let inner2 = node2.as_ref().unwrap().borrow();
-    if inner1.val != inner2.val { return false; }
+    if inner1.val != inner2.val {
+        return false;
+    }
     is_equal(&inner1.left, &inner2.left) && is_equal(&inner1.right, &inner2.right)
 }
 
@@ -51,7 +57,9 @@ fn push_char(queue: &mut VecDeque<Tree>, output: &mut String) {
 }
 
 pub fn serialize(root: &Tree) -> String {
-    if root.is_none() { return String::new(); }
+    if root.is_none() {
+        return String::new();
+    }
     let mut output = String::new();
     let mut queue = VecDeque::from(vec![Some(root.as_ref().unwrap().clone())]);
     push_char(&mut queue, &mut output);
@@ -77,9 +85,11 @@ fn add_node(
 }
 
 pub fn deserialize(s: String) -> Tree {
-    if s.len() == 0 { return None; }
+    Some(()).filter(|_| s.len() > 0)?;
     let mut nodes = s.split(',');
-    let root = Rc::new(RefCell::new(TreeNode::new(nodes.next().unwrap().parse().unwrap())));
+    let root = Rc::new(RefCell::new(TreeNode::new(
+        nodes.next().unwrap().parse().unwrap(),
+    )));
     let mut queue = VecDeque::from(vec![root.clone()]);
     while !queue.is_empty() {
         let current = queue.pop_front();
@@ -134,7 +144,6 @@ mod tests {
                 assert!(!is_equal(&test_trees[i], &test_trees[j]));
             }
         }
-
     }
 
     #[test]

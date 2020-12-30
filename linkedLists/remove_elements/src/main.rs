@@ -1,18 +1,15 @@
 // Definition for singly-linked list.
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct ListNode {
-  pub val: i32,
-  pub next: Option<Box<ListNode>>
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
 }
 
 impl ListNode {
-  #[inline]
-  fn new(val: i32) -> Self {
-    ListNode {
-      next: None,
-      val
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
     }
-  }
 }
 
 struct Solution {}
@@ -27,7 +24,9 @@ impl Solution {
                 None => break,
                 Some(boxed_node) => {
                     let node = *boxed_node;
-                    if node.val != val { filtered_values.push(node.val); }
+                    if node.val != val {
+                        filtered_values.push(node.val);
+                    }
                     current = node.next;
                 }
             }
@@ -53,12 +52,16 @@ impl Solution {
                 None => break,
                 Some(start_ptr) => {
                     let node: ListNode = *start_ptr;
-                    if node.val == val { start = node.next.clone(); } else { break; }
+                    if node.val == val {
+                        start = node.next.clone();
+                    } else {
+                        break;
+                    }
                 }
             }
         }
         // if no valid starting pointer is found, return None
-        if start.is_none() { return None; }
+        start.as_ref()?;
 
         let mut prev = &mut start;
 
@@ -68,9 +71,13 @@ impl Solution {
                     if let Some(next_ptr) = &prev_ptr.next {
                         if next_ptr.val == val {
                             prev_ptr.next = next_ptr.next.clone();
-                        } else { break; }
-                    } else { break; }
-                };
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
                 prev = &mut prev.as_mut().unwrap().next;
             }
         }

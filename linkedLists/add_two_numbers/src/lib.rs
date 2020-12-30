@@ -1,20 +1,17 @@
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub struct ListNode {
-  pub val: i32,
-  pub next: Option<Box<ListNode>>
+    pub val: i32,
+    pub next: Option<Box<ListNode>>,
 }
 
 impl ListNode {
-  #[inline]
-  fn new(val: i32) -> Self {
-    ListNode {
-      next: None,
-      val
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
     }
-  }
 }
 
-/* 
+/*
 You are given two non-empty linked lists representing two non-negative integers. The most
 significant digit comes first and each of their nodes contain a single digit. Add the two numbers
 and return it as a linked list.
@@ -40,14 +37,20 @@ fn get_next_node<'a>(list: &'a List, len: &mut usize, sum: &mut i32) -> &'a List
     if let Some(node) = list {
         *sum += node.val;
         *len -= 1;
-        return &node.next
+        return &node.next;
     }
     list
 }
 
-fn recursive_helper(mut long: &List, mut l_len: usize, mut short: &List, mut s_len: usize, carry: &mut i32) -> List {
+fn recursive_helper(
+    mut long: &List,
+    mut l_len: usize,
+    mut short: &List,
+    mut s_len: usize,
+    carry: &mut i32,
+) -> List {
     // base case: terminate recursion when long is empty
-    if l_len == 0 { return None; }
+    Some(()).filter(|_| l_len == 0)?;
     let mut sum = 0;
     if l_len == s_len {
         short = get_next_node(short, &mut s_len, &mut sum);

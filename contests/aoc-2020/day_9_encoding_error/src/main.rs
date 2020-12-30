@@ -23,9 +23,7 @@ fn main() {
 // Each number (up until the invalid number) is the sum of two of the previous PREAMBLE_LENGTH numbers
 // Find the first invalid number
 fn first_invalid_number(nums: &Vec<u64>) -> Option<u64> {
-    if nums.len() <= PREAMBLE_LENGTH {
-        return None;
-    }
+    Some(()).filter(|_| nums.len() > PREAMBLE_LENGTH)?;
     let mut counts = HashMap::new();
     for i in 0..PREAMBLE_LENGTH {
         *counts.entry(nums[i]).or_insert(0) += 1;
