@@ -1,70 +1,83 @@
-use std::cmp;
-use std::fs::File;
-use std::io::{prelude::*, BufReader};
+/*
+From https://github.com/zookini/aoc-2020/blob/master/src/bin/11.rs
+*/
+
+use itertools::Itertools;
+use std::convert::TryInto;
+use std::iter::successors;
+
+type Direction = fn(&Grid, (usize, usize), (isize, isize)) -> Option<(usize, usize)>;
+type Grid = Vec<Vec<u8>>;
 
 fn main() {
-    if let Ok(f) = File::open("input.txt") {
-        let f = BufReader::new(f);
-        let matrix: Vec<Vec<char>> = f
-            .lines()
-            .filter_map(|line| line.ok())
-            .map(|string| string.chars().collect())
-            .collect();
-        let stable = stable_seating(&matrix);
-        let seated_count: usize = stable
-            .iter()
-            .map(|row| row.iter().filter(|&&char| char == '#').count())
-            .sum();
-        println!("seated: {}", seated_count);
-    }
+    let grid: Grid = include_str!("../input.txt")
+        .lines()
+        .map(|line| line.bytes().collect())
+        .collect();
+
+    println!(
+        "Part 1: {}",
+        seated(grid.clone(), 4, |grid, s, n| steps(&grid, s, n).next())
+    );
+    println!(
+        "Part 2: {}",
+        seated(grid.clone(), 5, |grid, s, n| steps(&grid, s, n)
+            .find(|&(x, y)| grid[y][x] != b'.'))
+    );
 }
 
-fn eight_neighbors(row: usize, col: usize, max_row: usize, max_col: usize) -> Vec<(usize, usize)> {
-    let mut res = Vec::new();
-    for i in if row == 0 { 0 } else { row - 1 }..=cmp::min(max_row, row + 1) {
-        for j in if col == 0 { 0 } else { col - 1 }..=cmp::min(max_col, col + 1) {
-            if i != row || j != col {
-                res.push((i, j));
-            }
-        }
-    }
-    res
+fn seated(start: Grid, limit: usize, direction: Direction) -> usize {
+    successors(Some(start), |grid| {
+        round(&grid, limit, direction).filter(|next| next != grid)
+    })
+    .last()
+    .unwrap()
+    .iter()
+    .flat_map(|row| row.iter().filter(|&&b| b == b'#'))
+    .count()
 }
 
-fn occupied_count(row: usize, col: usize, gen: usize, state: &Vec<Vec<Vec<char>>>) -> usize {
-    eight_neighbors(row, col, state[gen].len() - 1, state[gen][0].len() - 1)
-        .into_iter()
-        .filter(|&(row, col)| state[(gen + 1) % 2][row][col] == '#')
-        .count()
+fn round(grid: &Grid, limit: usize, direction: Direction) -> Option<Grid> {
+    Some(
+        grid.iter()
+            .enumerate()
+            .map(|(y, row)| {
+                row.iter()
+                    .enumerate()
+                    .map(|(x, &b)| {
+                        let neighbours = (-1..=1)
+                            .cartesian_product(-1..=1)
+                            .filter(|&step| step != (0, 0))
+                            .filter_map(|step| {
+                                direction(grid, (x, y), step).filter(|&(x, y)| grid[y][x] == b'#')
+                            })
+                            .count();
+
+                        match b {
+                            b'L' if neighbours == 0 => b'#',
+                            b'#' if neighbours >= limit => b'L',
+                            _ => b,
+                        }
+                    })
+                    .collect()
+            })
+            .collect(),
+    )
 }
 
-fn update_cell(row: usize, col: usize, gen: usize, state: &mut Vec<Vec<Vec<char>>>) {
-    let prev = (gen + 1) % 2;
-    state[gen][row][col] = match state[prev][row][col] {
-        'L' if occupied_count(row, col, gen, state) == 0 => '#',
-        '#' if occupied_count(row, col, gen, state) >= 4 => 'L',
-        _ => state[prev][row][col],
-    }
-}
+fn steps(
+    grid: &Grid,
+    start: (usize, usize),
+    step: (isize, isize),
+) -> impl Iterator<Item = (usize, usize)> {
+    let size = (grid[0].len(), grid.len());
 
-fn stable_seating(matrix: &Vec<Vec<char>>) -> Vec<Vec<char>> {
-    if matrix.is_empty() || matrix[0].is_empty() {
-        return matrix.clone();
-    }
-    let mut state = Vec::new();
-    state.push(vec![vec![' '; matrix[0].len()]; matrix.len()]);
-    state.push(matrix.clone());
-    let mut res = 0;
-    loop {
-        for row in 0..matrix.len() {
-            for col in 0..matrix[0].len() {
-                update_cell(row, col, res % 2, &mut state);
-            }
-        }
-        if state[0] == state[1] {
-            break;
-        }
-        res += 1;
-    }
-    state[0].clone()
+    successors(Some(start), move |&(x, y)| {
+        Some((
+            (x as isize + step.0).try_into().ok()?,
+            (y as isize + step.1).try_into().ok()?,
+        ))
+    })
+    .skip(1)
+    .take_while(move |&pos| pos.0 < size.0 && pos.1 < size.1)
 }
