@@ -14,6 +14,7 @@ Return the minimum number of operations needed to achieve your goal.
 use std::cmp;
 use std::collections::HashMap;
 
+const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyz";
 const ALPHABET_LEN: usize = 26;
 
 fn get_counts(s: &String) -> Vec<(char, u32)> {
@@ -26,52 +27,79 @@ fn get_counts(s: &String) -> Vec<(char, u32)> {
     counts
 }
 
-fn at_most_cost(counts: &Vec<(char, u32)>) -> [u32; ALPHABET_LEN] {
-    let len = counts.iter().map(|&(_, count)| count).sum::<u32>();
-    let mut res = [0; ALPHABET_LEN];
-    let mut res_ptr = ALPHABET_LEN - 1;
-    let mut counts_ptr = counts.len() as isize - 1;
-    for i in (0..ALPHABET_LEN + 1).rev() {}
-    res
-}
-
-fn at_least_cost(counts: &Vec<(char, u32)>) -> [u32; ALPHABET_LEN] {
-    let len = counts.iter().map(|&(_, count)| count).sum::<u32>();
-    let mut res = [0; ALPHABET_LEN];
-    let mut counts_ptr = 0;
-    for i in 0..ALPHABET_LEN + 1 {}
-    res
-}
-
-fn a_greater_cost(a: &[u32; ALPHABET_LEN], b: &[u32; ALPHABET_LEN], res: &mut u32) {
-    for i in 0..25 {
-        *res = cmp::min(*res, a[i + 1] + b[i]);
-    }
-}
-
 fn single_char_cost(counts: &Vec<(char, u32)>) -> u32 {
     let len = counts.iter().map(|&(_, count)| count).sum::<u32>();
     let max = *counts.iter().map(|(_, count)| count).max().unwrap_or(&0);
     len - max
 }
 
+fn cost_to_lower(counts: &Vec<(char, u32)>) -> [u32; ALPHABET_LEN] {
+    let abecedary: Vec<char> = ALPHABET.chars().collect();
+    let mut res = [0; ALPHABET_LEN];
+    let mut counts_ptr = counts.len() as isize - 1;
+    for i in (0..ALPHABET_LEN - 1).rev() {
+        res[i] += res[i + 1];
+        if counts_ptr >= 0 && abecedary[i] < counts[counts_ptr as usize].0 {
+            res[i] += counts[counts_ptr as usize].1;
+            counts_ptr -= 1;
+        }
+    }
+    res
+}
+
+fn cost_to_raise(counts: &Vec<(char, u32)>) -> [u32; ALPHABET_LEN] {
+    let abecedary: Vec<char> = ALPHABET.chars().collect();
+    let mut res = [0; ALPHABET_LEN];
+    let mut counts_ptr = 0;
+    for i in 1..ALPHABET_LEN {
+        res[i] += res[i - 1];
+        if counts_ptr < counts.len() && abecedary[i] > counts[counts_ptr].0 {
+            res[i] += counts[counts_ptr].1;
+            counts_ptr += 1;
+        }
+    }
+    res
+}
+
+fn cost_to_make_first_greater(a: &[u32; ALPHABET_LEN], b: &[u32; ALPHABET_LEN], res: &mut u32) {
+    for i in 0..ALPHABET_LEN - 1 {
+        *res = cmp::min(*res, a[i + 1] + b[i]);
+    }
+}
+
 pub fn min_characters(a: String, b: String) -> i32 {
     let a_counts = get_counts(&a);
     let b_counts = get_counts(&b);
     let mut res = single_char_cost(&a_counts) + single_char_cost(&b_counts);
-    let a_lower = at_least_cost(&a_counts);
-    let a_raise = at_most_cost(&a_counts);
-    let b_lower = at_least_cost(&b_counts);
-    let b_raise = at_most_cost(&b_counts);
-    a_greater_cost(&a_raise, &b_lower, &mut res);
-    a_greater_cost(&b_raise, &a_lower, &mut res);
+    cost_to_make_first_greater(
+        &cost_to_raise(&a_counts),
+        &cost_to_lower(&b_counts),
+        &mut res,
+    );
+    cost_to_make_first_greater(
+        &cost_to_raise(&b_counts),
+        &cost_to_lower(&a_counts),
+        &mut res,
+    );
     res as i32
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn test_min_characters() {
+        let test_tuples = vec![
+            ("aba".to_string(), "caa".to_string(), 2),
+            ("dabadd".to_string(), "cda".to_string(), 3),
+            (
+                "jukdyrwxmayusovrggihfiluaewjbixpxybjfsjuyjcdnsxacodbwfdbfyklwfkblnijmhwivo".to_string(),
+                "sdtinjseqrjmmumheuimgmnwfjgwftdldjwpugupnwnltslplgufmynmsovqnculunfycwlxrcregkwkvlwwkhitqyiavabxhu".to_string(),
+                69,
+            ),
+        ];
+        for (a, b, expected) in test_tuples {
+            assert_eq!(min_characters(a, b), expected);
+        }
     }
 }
