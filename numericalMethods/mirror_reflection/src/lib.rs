@@ -44,10 +44,7 @@ fn gcd(a: i32, b: i32) -> i32 {
     if b > a {
         return gcd(b, a);
     }
-    if a == b {
-        return a;
-    }
-    if b == 0 {
+    if a == b || b == 0 {
         return a;
     }
     if a & 1 == 0 {
